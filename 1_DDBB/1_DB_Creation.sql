@@ -18,6 +18,8 @@ CREATE TABLE Empleado (
 	FOREIGN KEY(EmployeeType) REFERENCES TipoEmpleado(IdEmployeeType)
 );
 GO
+-- TODO: Update password
+-- TODO: Update IdEmpleado por CHAR
 
 CREATE TABLE Empleado_Activo (
 	IdEmpActivo INT PRIMARY KEY NOT NULL,
@@ -45,6 +47,7 @@ CREATE TABLE Productos (
 	FOREIGN KEY(IdProdCategory) REFERENCES ProductCategory(IdCategory)
 );
 GO
+-- TODO: Update Stock not null but if it is put 0
 
 CREATE TABLE ProductPrices (
 	IdPrice INT PRIMARY KEY NOT NULL,
@@ -87,6 +90,8 @@ CREATE TABLE Product_Items (
 	FOREIGN KEY(ProductID) REFERENCES Productos(IdProducto)
 );
 
+-- TODO: Add a TemporalTable for ItemsReceipt
+-- IdItem, Quantity, TickerOrderId, ProductID
 
 --DROP TABLE IF EXISTS Empleado;
 --DROP TABLE IF EXISTS Empleado_Activo;

@@ -1,4 +1,4 @@
-using Caps_Project.Migrations;
+using Caps_Project.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 

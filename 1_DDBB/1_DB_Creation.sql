@@ -91,8 +91,16 @@ CREATE TABLE Product_Items (
 	FOREIGN KEY(ProductID) REFERENCES Productos(IdProducto)
 );
 
--- TODO: Add a TemporalTable for ItemsReceipt
+-- Add a TemporalTable for ItemsReceipt
 -- IdItem, Quantity, TickerOrderId, ProductID
+CREATE TABLE TempCarrito(
+	IdItem INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	ProductPriceID INT NOT NULL,
+	Quantity INT NOT NULL,
+	OrderUUID UNIQUEIDENTIFIER NOT NULL,
+	ProductID INT NOT NULL,
+)
+--OrderUUID = DEFAULT NEWID()
 
 
 --DROP TABLE IF EXISTS Inventario;

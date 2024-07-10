@@ -14,12 +14,13 @@ CREATE TABLE Empleado (
 	Nombre VARCHAR(100) NOT NULL,
 	ApPaterno VARCHAR(100) NOT NULL,
 	ApMaterno VARCHAR(100) NOT NULL,
-	Contrasena VARCHAR(30) NOT NULL,
+	Contrasena  VARBINARY(MAX),--VARCHAR(30) NOT NULL,
 	EmployeeType INT NOT NULL,
 	FOREIGN KEY(EmployeeType) REFERENCES TipoEmpleado(IdEmployeeType)
 );
 GO
 -- TODO: Update password encriptada
+--ALTER TABLE Empleado ADD Contrasena VARBINARY(MAX);
 
 CREATE TABLE Empleado_Activo (
 	Id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
@@ -51,9 +52,9 @@ GO
 
 CREATE TABLE ProductPrices (
 	IdPrice INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	UnitPrice INT NOT NULL,
-	StartDate INT NOT NULL,
-	EndDate INT NULL,
+	UnitPrice MONEY NOT NULL,
+	StartDate DATETIME NOT NULL,
+	EndDate DATETIME NULL,
 	ProductID INT NOT NULL,
 	FOREIGN KEY(ProductID) REFERENCES Productos(IdProducto)
 );

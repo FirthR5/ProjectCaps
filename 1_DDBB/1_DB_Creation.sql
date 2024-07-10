@@ -1,29 +1,29 @@
-CREATE DATABASE DB_CAPS
-GO
+--CREATE DATABASE DB_CAPS
+--GO
 USE DB_CAPS
 GO
 
 CREATE TABLE TipoEmpleado (
-	IdEmployeeType INT PRIMARY KEY NOT NULL,
+	IdEmployeeType INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	EmpTypeName VARCHAR(100) NOT NULL
 );
 GO
 
 CREATE TABLE Empleado (
-	IdEmpleado INT PRIMARY KEY NOT NULL,
+	IdEmpleado CHAR(10) PRIMARY KEY NOT NULL,
 	Nombre VARCHAR(100) NOT NULL,
 	ApPaterno VARCHAR(100) NOT NULL,
 	ApMaterno VARCHAR(100) NOT NULL,
+	Contrasena VARCHAR(30) NOT NULL,
 	EmployeeType INT NOT NULL,
 	FOREIGN KEY(EmployeeType) REFERENCES TipoEmpleado(IdEmployeeType)
 );
 GO
--- TODO: Update password
--- TODO: Update IdEmpleado por CHAR
+-- TODO: Update password encriptada
 
 CREATE TABLE Empleado_Activo (
-	IdEmpActivo INT PRIMARY KEY NOT NULL,
-	IdEmpleado INT NOT NULL,
+	Id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	IdEmpleado CHAR(10) NOT NULL,
 	StartDate DATETIME NOT NULL,
 	EndDate DATETIME NULL,
 	Turno VARCHAR(30) NOT NULL,
@@ -32,13 +32,13 @@ CREATE TABLE Empleado_Activo (
 GO
 
 CREATE TABLE ProductCategory (
-	IdCategory INT PRIMARY KEY NOT NULL,
+	IdCategory INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	CategoryName VARCHAR(100) NOT NULL
 );
 GO
 
 CREATE TABLE Productos (
-	IdProducto INT PRIMARY KEY NOT NULL,
+	IdProducto INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	ProdName VARCHAR(100) NOT NULL,
 	Stock INT NOT NULL,
 	IdProdCategory INT NOT NULL,
@@ -50,7 +50,7 @@ GO
 -- TODO: Update Stock not null but if it is put 0
 
 CREATE TABLE ProductPrices (
-	IdPrice INT PRIMARY KEY NOT NULL,
+	IdPrice INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	UnitPrice INT NOT NULL,
 	StartDate INT NOT NULL,
 	EndDate INT NULL,
@@ -60,8 +60,8 @@ CREATE TABLE ProductPrices (
 GO
 
 CREATE TABLE OrderReceipt (
-	OrderId INT PRIMARY KEY NOT NULL,
-	IdEmpleado INT NOT NULL,
+	OrderId INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	IdEmpleado CHAR(10) NOT NULL,
 	TotalPaid MONEY NOT NULL,
 	OrderDate DATETIME NOT NULL,
 	FOREIGN KEY(IdEmpleado) REFERENCES Empleado(IdEmpleado)
@@ -69,10 +69,10 @@ CREATE TABLE OrderReceipt (
 GO
 
 CREATE TABLE Inventario (
-	Id INT PRIMARY KEY NOT NULL,
+	Id INT PRIMARY KEY IDENTITY(1,1) NOT  NULL,
 	EntryDate DATETIME NOT NULL,
 	Quantity INT NOT NULL,
-	IdAdmin INT NOT NULL,
+	IdAdmin CHAR(10) NOT NULL,
 	IdProduct INT NOT NULL,
 	FOREIGN KEY(IdAdmin) REFERENCES Empleado(IdEmpleado),
 	FOREIGN KEY(IdProduct) REFERENCES Productos(IdProducto)
@@ -80,7 +80,7 @@ CREATE TABLE Inventario (
 GO
 
 CREATE TABLE Product_Items (
-	IdItem INT PRIMARY KEY NOT NULL,
+	IdItem INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	ProductPriceID INT NOT NULL,
 	Quantity INT NOT NULL,
 	TicketOrderID INT NOT NULL,
@@ -93,12 +93,26 @@ CREATE TABLE Product_Items (
 -- TODO: Add a TemporalTable for ItemsReceipt
 -- IdItem, Quantity, TickerOrderId, ProductID
 
---DROP TABLE IF EXISTS Empleado;
---DROP TABLE IF EXISTS Empleado_Activo;
---DROP TABLE IF EXISTS TipoEmpleado;
---DROP TABLE IF EXISTS Productos;
---DROP TABLE IF EXISTS ProductCategory;
---DROP TABLE IF EXISTS ProductPrices;
---DROP TABLE IF EXISTS Product_Items;
---DROP TABLE IF EXISTS OrderReceipt;
+
 --DROP TABLE IF EXISTS Inventario;
+--GO
+--DROP TABLE IF EXISTS OrderReceipt;
+--GO
+--DROP TABLE IF EXISTS Product_Items;
+--GO
+--DROP TABLE IF EXISTS ProductPrices;
+--GO
+--DROP TABLE IF EXISTS Productos;
+--GO
+--DROP TABLE IF EXISTS ProductCategory;
+--GO
+--DROP TABLE IF EXISTS Empleado;
+--GO
+--DROP TABLE IF EXISTS Empleado_Activo;
+--GO
+--DROP TABLE IF EXISTS TipoEmpleado;
+
+--DROP DATABASE DB_CAPS
+
+
+-- Fix: Char(10) on EmpleadoID, Contrasena char(30)

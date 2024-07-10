@@ -46,6 +46,8 @@ EXEC VerificarUsuarioActivo @IdEmpleado ='ADM-567890'
 -- Ver Datos del usuario (El mismo usuario ve su informacion):
 -- By: Todos los empleados, Admin
 -- TODO: Probar View despues
+CREATE VIEW vw_Datos_Usuario
+AS
 SELECT E.IdEmpleado, (Nombre + ' ' + ApPaterno + ' ' + ApMaterno) AS NombreCompleto,
 TE.EmpTypeName
 FROM dbo.Empleado E
@@ -236,6 +238,7 @@ DECLARE @OrderId INT;
 SET @OrderId = 1; -- Obtener el OrderID del Receipt
 SET @IdProduct = 1;
 
+-- Insertar datos de TempCarrito
 Insert Into Product_Items(ProductID,ProductPriceID, Quantity, TickerOrderID)
 VALUES (@IdProduct,1,2,@OrderId)
 

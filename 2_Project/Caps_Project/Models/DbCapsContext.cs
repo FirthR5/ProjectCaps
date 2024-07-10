@@ -31,8 +31,12 @@ public partial class DbCapsContext : DbContext
 
     public virtual DbSet<Producto> Productos { get; set; }
 
+    public virtual DbSet<TempCarrito> TempCarritos { get; set; }
+
     public virtual DbSet<TipoEmpleado> TipoEmpleados { get; set; }
 
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    => optionsBuilder.UseSqlServer("name=DevDB");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -191,6 +195,17 @@ public partial class DbCapsContext : DbContext
                 .HasForeignKey(d => d.IdProdCategory)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Productos__IdPro__412EB0B6");
+        });
+
+        modelBuilder.Entity<TempCarrito>(entity =>
+        {
+            entity.HasKey(e => e.IdItem).HasName("PK__TempCarr__51E8426261C66D48");
+
+            entity.ToTable("TempCarrito");
+
+            entity.Property(e => e.OrderUuid).HasColumnName("OrderUUID");
+            entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.ProductPriceId).HasColumnName("ProductPriceID");
         });
 
         modelBuilder.Entity<TipoEmpleado>(entity =>

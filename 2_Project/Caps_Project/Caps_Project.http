@@ -1,0 +1,14 @@
+﻿@Caps_Project_HostAddress = https://localhost:7066
+
+GET {{Caps_Project_HostAddress}}/inventario/getlistprodcat/{id}
+
+###
+
+POST {{Caps_Project_HostAddress}}/home/login/{id}
+Content-Type: application/json
+
+{
+  //LoginDTO
+}
+
+###

@@ -14,6 +14,28 @@ namespace Caps_Project.DTOs
         {
             CreateMap<ProductCategory, ProdCategoryDTO>().ReverseMap();
 
+            CreateMap<NuevoProductoDTO, Producto>()
+                .ForMember(name => name.ProdName,
+                          opt => opt.MapFrom(src => src.ProdName))
+                .ForMember(name => name.Stock,
+                          opt => opt.MapFrom(src => src.Stock))
+                .ForMember(name => name.IdProdCategory,
+                          opt => opt.MapFrom(src => src.IdProdCategory))
+                .ForMember(name => name.Descripcion,
+                          opt => opt.MapFrom(src => src.Descripcion))
+                .ForMember(name => name.Activo,
+                          opt => opt.MapFrom(src => src.Activo))
+                ;
+
+            CreateMap<NuevoProductoDTO, ProductPrice>()
+                .ForMember(name => name.UnitPrice,
+                          opt => opt.MapFrom(src => src.UnitPrice))
+                .ForMember(name => name.StartDate,
+                          opt => opt.MapFrom(src => src.StartDate))
+                .ForMember(name => name.EndDate,
+                          opt => opt.MapFrom(src => src.EndDate))
+                               ;
+
             // SourceModel, DestinationDTO
             CreateMap<Empleado, ActivarUsuarioDTO>();
             CreateMap<OrderReceipt, OrderReceiptDTO>();

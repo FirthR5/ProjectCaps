@@ -13,6 +13,11 @@ namespace Caps_Project.Services
     {
         public LoginService(DbCapsContext context ) : base(context) { }
 
+        /// <summary>
+        /// Verificar Credenciales al hacer Login
+        /// </summary>
+        /// <param name="credenciales"></param>
+        /// <returns>0=False, 1=Verdadero</returns>
         public async Task<int> VerificarCredenciales(LoginDTO credenciales)
         {
             //Input Parameter
@@ -31,6 +36,11 @@ namespace Caps_Project.Services
             int Exitoso = (int)correctoParam.Value;
             return Exitoso;
         }
+        /// <summary>
+        /// Verificar Usuario esta Activo en el Sistema
+        /// </summary>
+        /// <param name="idEmpleado"></param>
+        /// <returns>0=False, 1=Verdadero</returns>
         public async Task<int> VerificarUsuarioActivo(string idEmpleado)
         {
             var idEmpleadoParam = new SqlParameter("@IdEmpleado", idEmpleado);
@@ -49,6 +59,13 @@ namespace Caps_Project.Services
 
             return (int)countParam.Value;
         }
+        /// <summary>
+        /// Credenciales del Empleado
+        /// Darle las Credenciales para poder iniciar sesion
+        /// Y Guardar informacion (Nombre, ID, Tipo Usuario)
+        /// </summary>
+        /// <param name="idEmpleado"></param>
+        /// <returns></returns>
         public async Task<ClaimsIdentity> CredencialesEmpleado(string idEmpleado)
         {
             var reqTipoEmp = await context.Empleados.FirstOrDefaultAsync(e => e.IdEmpleado == idEmpleado);

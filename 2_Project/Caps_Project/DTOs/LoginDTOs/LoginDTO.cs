@@ -4,7 +4,7 @@
     public class LoginDTO
     {
         public string IdEmpleado { get; set; } = null!;
-        public byte[]? Contrasena { get; set; }
+        public string Contrasena { get; set; }
 
     }
 }

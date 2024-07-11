@@ -1,5 +1,8 @@
+using Caps_Project.DTOs.LoginDTOs;
 using Caps_Project.Models;
+using Caps_Project.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace Caps_Project.Controllers
@@ -7,14 +10,24 @@ namespace Caps_Project.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly DbCapsContext _contexto;
+        public HomeController(ILogger<HomeController> logger, DbCapsContext context )
         {
             _logger = logger;
+            _contexto = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            LoginDTO objeto = new LoginDTO()
+            {
+                IdEmpleado= "ADM-000001",
+                Contrasena = "12345"
+            };
+            var obj = new LoginService(_contexto);
+            int exitoso = await obj.VerificarCredenciales(objeto);
             return View();
         }
 

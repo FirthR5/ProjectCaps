@@ -1,4 +1,4 @@
-﻿using Caps_Project.Migrations;
+﻿using Caps_Project.Models;
 
 namespace Caps_Project.Services
 {

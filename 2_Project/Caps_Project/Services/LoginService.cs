@@ -1,8 +1,11 @@
 ﻿using Caps_Project.DTOs.LoginDTOs;
 using Caps_Project.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Security.Claims;
 
 namespace Caps_Project.Services
 {
@@ -45,6 +48,22 @@ namespace Caps_Project.Services
             );
 
             return (int)countParam.Value;
+        }
+        public async Task<ClaimsIdentity> CredencialesEmpleado(string idEmpleado)
+        {
+            var reqTipoEmp = await context.Empleados.FirstOrDefaultAsync(e => e.IdEmpleado == idEmpleado);
+            var tipoEmpl = reqTipoEmp.EmployeeType;
+            var reqTipo = await context.TipoEmpleados.FirstOrDefaultAsync(t=>t.IdEmployeeType == tipoEmpl);
+            string tipoEmpleado = reqTipo.EmpTypeName;
+
+            List<Claim> claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.NameIdentifier, idEmpleado),
+                new Claim(ClaimTypes.Role, tipoEmpleado)//TODO: o ponerle el numerito?
+            };
+            claims.Add(new Claim("Nombre", $"{reqTipoEmp.Nombre} {reqTipoEmp.ApPaterno} {reqTipoEmp.ApMaterno}"));
+            ClaimsIdentity claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            return claimIdentity;
         }
     }
 }

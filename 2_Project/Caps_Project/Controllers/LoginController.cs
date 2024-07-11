@@ -1,83 +1,53 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Caps_Project.DTOs.LoginDTOs;
+using Caps_Project.Models;
+using Caps_Project.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Caps_Project.Controllers
 {
     public class LoginController : Controller
     {
+        private readonly DbCapsContext _contexto;
+        public LoginController(DbCapsContext context)
+        {
+            _contexto = context;
+        }
         // GET: LoginController
-        public ActionResult Index()
+
+        [HttpGet]
+        public async Task<IActionResult> Login()
         {
             return View();
         }
 
-        // GET: LoginController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: LoginController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: LoginController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Login([FromBody]LoginDTO loginDTO)
         {
-            try
+            //LoginDTO objeto = new LoginDTO()
+            //{
+            //    IdEmpleado = "ADM-000001",
+            //    Contrasena = "12345"
+            //};
+            var serv_Login = new LoginService(_contexto);
+            int UsuarioCorrecto = await serv_Login.VerificarCredenciales(loginDTO);
+            if (UsuarioCorrecto == 1)
             {
-                return RedirectToAction(nameof(Index));
+                int UsuarioActivo = await serv_Login.VerificarUsuarioActivo(loginDTO.IdEmpleado);
+                if (UsuarioCorrecto == 1)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    // Usuario No activo
+                }
             }
-            catch
+            else
             {
-                return View();
+                // return usuario no correcto
             }
-        }
-
-        // GET: LoginController/Edit/5
-        public ActionResult Edit(int id)
-        {
             return View();
-        }
-
-        // POST: LoginController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: LoginController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: LoginController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

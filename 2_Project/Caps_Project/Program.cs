@@ -1,3 +1,4 @@
+using Caps_Project.DTOs;
 using Caps_Project.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,8 @@ builder.Services.AddControllersWithViews();
 //builder.Services.AddDbContext<DbCapsContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevDB")));
 builder.Services.AddDbContext<DbCapsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DevDB")));
+// Agregar Automappers
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 
 var app = builder.Build();

@@ -51,8 +51,10 @@ EXEC ActivarUsuario
 -- (12) Create Product Categories
 INSERT INTO dbo.ProductCategory
 (CategoryName)--MAX:100
-VALUES('Completo')
+VALUES('Bebidas', 'Alimentos')
 GO
+
+
 -- =======================================================================
 -- Triggers:
 -- =======================================================================

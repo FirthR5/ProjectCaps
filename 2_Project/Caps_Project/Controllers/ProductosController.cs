@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Caps_Project.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Caps_Project.Controllers
@@ -6,6 +8,13 @@ namespace Caps_Project.Controllers
     public class ProductosController : Controller
     {
         // GET: ProductosController
+        private readonly DbCapsContext contexto;
+        private readonly IMapper mapper;
+        public ProductosController(DbCapsContext context, IMapper mapper)
+        {
+            this.contexto = context;
+            this.mapper = mapper;
+        }
         public ActionResult Index()
         {
             return View();

@@ -13,13 +13,13 @@ namespace Caps_Project.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
         //private readonly IConfiguration _configuration;
-        private readonly DbCapsContext _contexto;
+        private readonly DbCapsContext contexto;
         public HomeController(ILogger<HomeController> logger, DbCapsContext context )
         {
-            _logger = logger;
-            _contexto = context;
+            this.logger = logger;
+            this.contexto = context;
         }
 
         public async Task<IActionResult> Index()
@@ -45,7 +45,7 @@ namespace Caps_Project.Controllers
             //    IdEmpleado = "ADM-000001",
             //    Contrasena = "12345"
             //};
-            var serv_Login = new LoginService(_contexto);
+            var serv_Login = new LoginService(contexto);
             int usuarioCorrecto = await serv_Login.VerificarCredenciales(loginDTO);
             if (usuarioCorrecto == 1)
             {
@@ -92,7 +92,6 @@ namespace Caps_Project.Controllers
         [Authorize(Roles = "ADMINISTRADOR")]
         public IActionResult Admin()
         {
-
             return View();
         }
         [Authorize(Roles = "EMPLEADO")]

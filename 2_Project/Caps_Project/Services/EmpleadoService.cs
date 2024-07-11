@@ -48,7 +48,7 @@ namespace Caps_Project.Services
             );
         }
 
-        public void DesacivarUsuario(string idEmpleado)
+        public void DesactivarUsuario(string idEmpleado)
         {
             // Buscar el registro que quieres actualizar
             var empleado = context.EmpleadoActivos.FirstOrDefault(e => e.IdEmpleado == idEmpleado);

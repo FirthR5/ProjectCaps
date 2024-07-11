@@ -1,4 +1,5 @@
-﻿using Caps_Project.DTOs.LoginDTOs;
+﻿using AutoMapper;
+using Caps_Project.DTOs.LoginDTOs;
 using Caps_Project.Models;
 using Caps_Project.Services;
 using Microsoft.AspNetCore.Http;
@@ -8,10 +9,12 @@ namespace Caps_Project.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly DbCapsContext _contexto;
-        public LoginController(DbCapsContext context)
+        private readonly DbCapsContext contexto;
+        private readonly IMapper mapper;
+        public LoginController(DbCapsContext context, IMapper mapper)
         {
-            _contexto = context;
+            this.contexto = context;
+            this.mapper = mapper;
         }
         // GET: LoginController
 

@@ -1,10 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Caps_Project.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Caps_Project.Controllers
 {
     public class EmpleadosUsersController : Controller
     {
+        private readonly DbCapsContext contexto;
+        private readonly IMapper mapper;
+        public EmpleadosUsersController(DbCapsContext context, IMapper mapper)
+        {
+            this.contexto = context;
+            this.mapper = mapper;
+        }
         // GET: UsuariosController
         public ActionResult Index()
         {

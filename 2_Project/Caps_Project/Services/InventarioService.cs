@@ -1,4 +1,5 @@
-﻿using Caps_Project.DTOs.InventarioDTOs;
+﻿using AutoMapper;
+using Caps_Project.DTOs.InventarioDTOs;
 using Caps_Project.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -10,33 +11,100 @@ namespace Caps_Project.Services
     public class InventarioService : BaseService
     {
         public InventarioService(DbCapsContext context) : base(context) { }
-        public async Task InsertProductCategory(ProductCategory categoryModel)
+        public InventarioService(DbCapsContext context, IMapper mapper) : base(context, mapper) { }
+
+        /// <summary>
+        /// Categoria de Productos
+        /// </summary>
+        /// <returns>Lista de Categorias de Productos</returns>
+        public async Task<List<ProductCategory>> ListProductCategorias()
+        {
+            //Todo: Auto Encoder
+            List<ProductCategory> listaCaegories = context.ProductCategories.ToList();
+            return listaCaegories;
+        }
+
+
+
+        private async Task<bool> ProductExists(int IdProducto)
+        {
+            bool count = context.Productos.Any(p => p.IdProducto == 1);
+            return count;
+        }
+
+        private async Task InsertProductCategory(ProductCategory categoryModel)
         {
             //context.ProductCategories.AsNoTracking();
             context.Add(categoryModel);
             context.SaveChanges();
         }
-        public async Task<bool> ProductExists(int IdProducto)
+        
+        // TODO: Quitarle el Insert y poner el metodo (store procedure) que esta abajo de este metodo.
+        /// <summary>
+        /// Registrar Nuevos Productos
+        /// </summary>
+        /// <param name="nuevoProducto"></param>
+        /// <returns></returns>
+        public async Task<bool> RegistrarProducto(NuevoProductoDTO nuevoProducto)
         {
-            bool count = context.Productos
-                                .Any(p => p.IdProducto == 1);
-            return count;
-        }
-        private void RegistrarProducto(Producto nuevoProducto)
-        {
-            context.Productos.Add(nuevoProducto);
-            context.SaveChanges();
-        }
-        private void InsertOrUpdateProductPrices(NewProductoPriceDTO newProductPrice)
-        {
-            var parameters = new[]
+            using (var transaction = context.Database.BeginTransaction())
             {
-                new SqlParameter("@ProductID", SqlDbType.Int) { Value = newProductPrice.ProductId },
-                new SqlParameter("@UnitPrice", SqlDbType.Money) { Value = newProductPrice.UnitPrice }
-            };
+                try
+                {
+                    // Mapear estos objetos a su originales
+                    Producto Producto = mapper.Map<Producto>(nuevoProducto);
+                    ProductPrice Precio = mapper.Map<ProductPrice>(nuevoProducto);
 
-            context.Database.ExecuteSqlRaw("EXEC sp_InsertOrUpdateProductPrices @ProductID, @UnitPrice", parameters);
+                    // Crear/Registrar Nuevo Producto
+                    Producto.Activo = true;
+                    context.Productos.Add(Producto);
+                    await context.SaveChangesAsync();
+
+                    // Actualizar Precio del Producto
+                    Precio.ProductId = Producto.IdProducto;
+                    Precio.StartDate = DateTime.Now;
+                    context.ProductPrices.Add(Precio);
+                    await context.SaveChangesAsync();
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
         }
+        /// <summary>
+        /// Poner el Precio de Productos
+        /// Insertar Nuevo o Insert
+        /// </summary>
+        /// <param name="newProductPrice"></param>
+        public async Task<bool> InsertOrUpdateProductPrices(NewProductoPriceDTO newProductPrice)
+        {
+            try
+            {
+                var parameters = new[]
+                {
+                    new SqlParameter("@ProductID", SqlDbType.Int) { Value = newProductPrice.ProductId },
+                    new SqlParameter("@UnitPrice", SqlDbType.Money) { Value = newProductPrice.UnitPrice }
+                };
+                int rowsAffected = await context.Database.ExecuteSqlRawAsync("EXEC sp_InsertOrUpdateProductPrices @ProductID, @UnitPrice", parameters);
+                bool executionSuccessful = rowsAffected > 0;
+
+                return executionSuccessful;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Ingreso de Nueva Cantidad de Productos al Inventario
+        /// </summary>
+        /// <param name="ingresoInventario"></param>
         private void IngresoProdInventario(IngresoInventarioDTO ingresoInventario)
         {
             // Aplicar un automapper aqui
@@ -51,5 +119,15 @@ namespace Caps_Project.Services
             context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Lista de Productos
+        /// </summary>
+        /// <returns>List<Producto></returns>
+        public async Task<List<Producto>> ListProductos()
+        {
+            var query = context.Productos;
+            List<Producto> list = await query.ToListAsync();
+            return list;
+        }
     }
 }

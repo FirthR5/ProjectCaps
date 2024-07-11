@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Caps_Project.Controllers
 {
-    public class UsuariosController : Controller
+    public class EmpleadosUsersController : Controller
     {
         // GET: UsuariosController
         public ActionResult Index()

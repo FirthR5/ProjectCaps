@@ -4,11 +4,29 @@ GET {{Caps_Project_HostAddress}}/inventario/getlistprodcat/{id}
 
 ###
 
-POST {{Caps_Project_HostAddress}}/home/login/{id}
+POST {{Caps_Project_HostAddress}}/inventario/registranuevoproducto
 Content-Type: application/json
 
 {
-  //LoginDTO
+  "ProdName": "Frutas",
+  "Stock": 10,
+  "IdProdCategory": 1,
+  "Descripcion": "Hola",
+  "Activo": true,
+  "UnitPrice": 99.9,
+  "StartDate": "2024-07-10T00:00:00",
+  "EndDate": null
+}
+
+
+###
+
+POST {{Caps_Project_HostAddress}}/inventario/almacenaproducto
+Content-Type: application/json
+
+{
+  "ProductId": 1, 
+  "UnitPrice": 20
 }
 
 ###

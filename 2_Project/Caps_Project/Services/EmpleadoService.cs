@@ -1,5 +1,7 @@
-﻿using Caps_Project.DTOs.EmpleadoDTOs;
+﻿using AutoMapper;
+using Caps_Project.DTOs.EmpleadoDTOs;
 using Caps_Project.Models;
+using Caps_Project.Models.View.DTOs.LoginDTOs;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
@@ -9,13 +11,21 @@ namespace Caps_Project.Services
     public class EmpleadoService : BaseService
     {
         public EmpleadoService(DbCapsContext context) : base(context) { }
+        public EmpleadoService(DbCapsContext context, IMapper mapper) : base(context, mapper) { }
 
+        // TODO: Hacer Obtener Lista de Empleados
+        public async Task<List<vwDatosUsuarioDTO>> ListaEmpleados()
+        {
+
+            return await context.VwDatosUsuarios.ToListAsync();
+        }
 
         /// <summary>
         /// Obtener Lista de Tipos de Empleados para usarlo como Combobox
         /// </summary>
         /// <returns>Lista de Tipo Empleados</returns>
-        public List<TipoEmpleado> List_TipoEmpleado() =>context.TipoEmpleados.ToList();
+        public async Task<List<TipoEmpleado>> List_TipoEmpleado() 
+            => await context.TipoEmpleados.ToListAsync();
 
         public async Task<string> InsertarEmpleado(InsertEmpleadoDTO empleadoDTO)
         {
@@ -39,26 +49,27 @@ namespace Caps_Project.Services
 
             return (string)nuevoIdParam.Value;
         }
-        public async Task ActivarUsuario(ActivarUsuarioDTO usuarioDatosDTO)
+
+        public async Task<bool> ActivarUsuario(ActivarUsuarioDTO usuarioDatosDTO)
         {
+            bool isExecuted;
             await context.Database.ExecuteSqlRawAsync(
                 "EXEC ActivarUsuario @IdEmpleado, @Turno",
                 new SqlParameter("@IdEmpleado", usuarioDatosDTO.IdEmpleado),
                 new SqlParameter("@Turno", usuarioDatosDTO.Turno)
             );
+            isExecuted = true;
+            return isExecuted;
         }
 
         public void DesactivarUsuario(string idEmpleado)
         {
-            // Buscar el registro que quieres actualizar
             var empleado = context.EmpleadoActivos.FirstOrDefault(e => e.IdEmpleado == idEmpleado);
 
             if (empleado != null)
             {
-                // Actualizar la propiedad EndDate
                 empleado.EndDate = DateTime.Now;
 
-                // Guardar los cambios en la base de datos
                 context.SaveChanges();
             }
         }

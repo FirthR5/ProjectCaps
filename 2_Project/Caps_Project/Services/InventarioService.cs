@@ -152,13 +152,10 @@ namespace Caps_Project.Services
             try
             {
 
-                var producto = await context.Productos.FindAsync(idProducto);
-                if (producto != null)
-                {
-                    producto.Activo = false;
-                    await context.SaveChangesAsync();
-                    isExecuted = true;
-                }
+                ProductoVenderService Serv_Inventario = new ProductoVenderService(context);
+                //Activarlo
+                bool IsActivated = await Serv_Inventario.DesactivarProducto(idProducto);
+                
             }
             catch
             {
@@ -171,7 +168,7 @@ namespace Caps_Project.Services
         /// Lista de Productos
         /// </summary>
         /// <returns>List<Producto></returns>
-        public async Task<List<Producto>> ListProductos()
+        public async Task<List<Producto>> List_TipoEmpleado()
         {
             var query = context.Productos;
             List<Producto> list = await query.ToListAsync();

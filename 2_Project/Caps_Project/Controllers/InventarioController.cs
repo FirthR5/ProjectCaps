@@ -29,7 +29,7 @@ namespace Caps_Project.Controllers
         public async Task<ActionResult> ListaInventario()
         {
             InventarioService Serv_Inventario = new InventarioService(contexto);
-            var listaProductos = await Serv_Inventario.ListProductos();
+            var listaProductos = await Serv_Inventario.List_TipoEmpleado();
 
             return View(listaProductos);
         }
@@ -81,7 +81,7 @@ namespace Caps_Project.Controllers
                 }
 
                 return RedirectToAction(nameof(Index));
-            }//
+            }
             catch
             {
                 return View();

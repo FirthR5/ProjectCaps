@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Caps_Project.DTOs.EmpleadoDTOs;
 using Caps_Project.Models;
+using Caps_Project.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,76 +19,54 @@ namespace Caps_Project.Controllers
         // GET: UsuariosController
         public ActionResult Index()
         {
+
             return View();
         }
 
-        // GET: UsuariosController/Details/5
-        public ActionResult Details(int id)
+        // TODO: Hacer Obtener Lista de Empleados
+        // Ver la lista de los Empleados
+        private async Task<ActionResult> ListaEmpleados()
         {
-            return View();
+            EmpleadoService Serv_Inventario = new EmpleadoService(contexto);
+            var listaEmpleados = await Serv_Inventario.ListaEmpleados();
+
+            return View(listaEmpleados);
+        }
+        // Agregar a un empleado
+        private async void AgregarEmpleado(InsertEmpleadoDTO empleadoDTO)
+        {
+            // Registrar mi Empleado
+            EmpleadoService Serv_Inventario = new EmpleadoService(contexto);
+            string IdEmpleado = await Serv_Inventario.InsertarEmpleado(empleadoDTO);
+
+            // DTO de Activar usuario
+            ActivarUsuarioDTO activarUsuario = new ActivarUsuarioDTO() { IdEmpleado = IdEmpleado, Turno = empleadoDTO.Turno };
+            //Activarlo
+            bool IsActivated = await Serv_Inventario.ActivarUsuario(activarUsuario);
+
+            //return View(listaProductos);
         }
 
-        // GET: UsuariosController/Create
-        public ActionResult Create()
+        // Activar o desactivar el usuario
+        private async void DeActivarEmpleado(string IdEmpleado)
         {
-            return View();
+            // TODO: Agregar DTO to DTO
+            ActivarUsuarioDTO usuario = new ActivarUsuarioDTO();
+            usuario.IdEmpleado = IdEmpleado;
+            EmpleadoService Serv_Inventario = new EmpleadoService(contexto);
+            //Activarlo
+            bool IsActivated = await Serv_Inventario.ActivarUsuario(usuario);
         }
 
-        // POST: UsuariosController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        // TODO: Ver si esto se implementa o neh
+        // Obtener la lista de los turnos de los empleados
+        //private void GetListaTurnos()
+        //{
+        //    EmpleadoService Serv_Inventario = new EmpleadoService(contexto);
+        //    var listaEmpleados = await Serv_Inventario.List_TipoEmpleado();
 
-        // GET: UsuariosController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+        //    return View(listaProductos);
+        //}
 
-        // POST: UsuariosController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: UsuariosController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: UsuariosController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Caps_Project.DTOs.LoginDTOs;
+﻿using Caps_Project.Models.View.DTOs.LoginDTOs;
 
 namespace Caps_Project.DTOs.EmpleadoDTOs
 {

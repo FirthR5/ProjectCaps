@@ -9,8 +9,9 @@
 
         public string ApMaterno { get; set; } = null!;
 
-        public byte[]? Contrasena { get; set; }
+        public string Contrasena { get; set; }
 
         public int EmployeeType { get; set; }
+        public string Turno { get; set; } = null!;
     }
 }

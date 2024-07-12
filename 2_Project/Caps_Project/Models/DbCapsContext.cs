@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Caps_Project.DTOs.LoginDTOs;
+using Caps_Project.DTOs.OrdenDTOs;
+using Caps_Project.Models.View.DTOs.LoginDTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace Caps_Project.Models;
@@ -219,8 +222,12 @@ public partial class DbCapsContext : DbContext
                 .IsUnicode(false);
         });
 
+        // Add option to use the SQL View
+        modelBuilder.Entity<vwDatosUsuarioDTO>().HasNoKey().ToView("vw_Datos_Usuario");
+
         OnModelCreatingPartial(modelBuilder);
     }
-
+    public DbSet<vwDatosUsuarioDTO> VwDatosUsuarios { get; set; }
+    public DbSet<ProductItemDTO> ProductItemsDTOs { get; set; }
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

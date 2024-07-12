@@ -46,6 +46,13 @@ namespace Caps_Project.DTOs
             CreateMap<EditarProductoDTO, Producto>();
             CreateMap<EditarProductoDTO, Producto>().ReverseMap();
 
+            CreateMap<ItemCarritoDTO, TempCarrito>()
+               .ForMember(name => name.ProductId,
+                         opt => opt.MapFrom(src => src.ProductId))
+                .ForMember(name => name.Quantity,
+                         opt => opt.MapFrom(src => src.Quantity))
+                ;
+
             // SourceModel, DestinationDTO
             CreateMap<Empleado, ActivarUsuarioDTO>();
             CreateMap<OrderReceipt, OrderReceiptDTO>();

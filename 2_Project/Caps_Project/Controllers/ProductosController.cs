@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Caps_Project.DTOs.EmpleadoDTOs;
+using Caps_Project.DTOs.OrdenDTOs;
 using Caps_Project.Models;
+using Caps_Project.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,78 +18,87 @@ namespace Caps_Project.Controllers
             this.contexto = context;
             this.mapper = mapper;
         }
-        public ActionResult Index()
-        {
-            return View();
-        }
 
-        // GET: ProductosController/Details/5
-        public ActionResult Details(int id)
+        #region Carrito Item
+        /// <summary>
+        /// API Agregar al Carrito
+        /// </summary>
+        /// <param name="carritoTmp"></param>
+        /// <returns></returns>
+        public async Task AgregarAlCarrito([FromBody] ItemCarritoDTO itemCarritoDTO)
         {
-            return View();
+            //TODO: Crear el UUID
+            // carritoTmp.OrderUuid = ???
+            ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
+            bool ejecucionCorrecta = await Serv_Inventario.AgregarAlCarrito(itemCarritoDTO);
+            // TODO: agregar
+            //ejecucionCorrecta
         }
+        // TODO: Crear metodo de Editar 
+        /// <summary>
+        /// Actualizar la cantidad de items seleccionados del Carrito temporal
+        /// </summary>
+        /// <param name="editarCarrito"></param>
+        /// <returns></returns>
+        public async Task EditarItemCarrito([FromBody] EditarCarritoDTO editarCarrito )
+        {
+            ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
+            bool IsActivated = await Serv_Inventario.EditarItemCarrito(editarCarrito);
+            // return ???;
+        }
+        /// <summary>
+        /// Eliminar un item del carrito temporal 
+        /// </summary>
+        /// <param name="IdItemTemp"></param>
+        /// <returns></returns>
+        public async Task EliminarItemDelCarrito(int IdItemTemp)
+        {
+            ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
+            //Activarlo
+            bool IsActivated = await Serv_Inventario.EliminarItemDelCarrito(IdItemTemp);
+            //return ???;
+        }
+       #endregion
 
-        // GET: ProductosController/Create
-        public ActionResult Create()
+        #region Orden
+        /// <summary>
+        /// Realiza ya la accion de Registrar la Orden en el sistema
+        /// Esta parte de encarga de crear la orden, registrar los productos del carrito temporal en el sistema (tbl product items)
+        /// y recibir el id de la orden una vez creada
+        /// </summary>
+        /// <param name="idEmpleado"></param>
+        /// <returns></returns>
+        private async Task RegistrarOrden(string idEmpleado)
         {
-            return View();
-        }
+            ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
+            var productosItems = contexto.ProductItems.ToList();
+            int OrderId = await Serv_Inventario.RegistrarOrden(idEmpleado, productosItems );
 
-        // POST: ProductosController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
+        /// <summary>
+        /// Ver lista de Ordenes realizados por el mismo usuario de la sesion actual
+        /// </summary>
+        /// <param name="idEmpleado"></param>
+        /// <returns></returns>
+        private async Task VerOrdenesRealizadas(string idEmpleado)
+        {
+            ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
+            var listaOrdenes_User = await Serv_Inventario.VerOrdenesRealizadas(idEmpleado);
+            // return ???;
+        }
+        /// <summary>
+        /// Ver Items de una Orden especifica en base a su ID Orden
+        /// </summary>
+        /// <param name="OrderId"></param>
+        /// <returns></returns>
+        private async Task VerOrderItems(int OrderId)
+        {
+            ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
+            var listaItemsOfOrden = await Serv_Inventario.VerOrderItems(OrderId);
+            // return ???;
+        }
+        
+        #endregion
 
-        // GET: ProductosController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ProductosController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ProductosController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ProductosController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

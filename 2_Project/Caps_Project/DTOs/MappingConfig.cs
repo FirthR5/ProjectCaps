@@ -35,6 +35,16 @@ namespace Caps_Project.DTOs
                 .ForMember(name => name.EndDate,
                           opt => opt.MapFrom(src => src.EndDate))
                                ;
+            CreateMap<IngresoInventarioDTO, Inventario>()
+                .ForMember(name => name.IdProduct,
+                          opt => opt.MapFrom(src => src.IdProduct))
+                 .ForMember(name => name.Quantity,
+                          opt => opt.MapFrom(src => src.Quantity))
+                  .ForMember(name => name.IdAdmin,
+                          opt => opt.MapFrom(src => src.IdAdmin))
+                  ;
+            CreateMap<EditarProductoDTO, Producto>();
+            CreateMap<EditarProductoDTO, Producto>().ReverseMap();
 
             // SourceModel, DestinationDTO
             CreateMap<Empleado, ActivarUsuarioDTO>();

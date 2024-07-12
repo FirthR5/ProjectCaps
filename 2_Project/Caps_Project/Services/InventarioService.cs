@@ -25,13 +25,31 @@ namespace Caps_Project.Services
         }
 
 
-
-        private async Task<bool> ProductExists(int IdProducto)
+        // TODO: Probar si funciona
+        /// <summary>
+        /// Obtener los Detalles Productos
+        /// </summary>
+        /// <param name="idProducto"></param>
+        /// <returns></returns>
+        private async Task<EditarProductoDTO> DetallesProducto(int idProducto)
         {
+            Producto modelo = await context.Productos.FirstOrDefaultAsync(p => p.IdProducto == 1);
+            EditarProductoDTO normal = mapper.Map<EditarProductoDTO>(modelo);
+            return normal;
+        }
+
+        // TODO:  Ver si funciona
+        private async Task<bool> EditarProducto(EditarProductoDTO product)
+        {
+            Producto normal = mapper.Map<Producto>(product);
             bool count = context.Productos.Any(p => p.IdProducto == 1);
+
+            await context.SaveChangesAsync();
+
             return count;
         }
 
+        // TODO: Agregarlo Despues
         private async Task InsertProductCategory(ProductCategory categoryModel)
         {
             //context.ProductCategories.AsNoTracking();
@@ -105,18 +123,48 @@ namespace Caps_Project.Services
         /// Ingreso de Nueva Cantidad de Productos al Inventario
         /// </summary>
         /// <param name="ingresoInventario"></param>
-        private void IngresoProdInventario(IngresoInventarioDTO ingresoInventario)
+        public async Task<bool> IngresoProdInventario(IngresoInventarioDTO ingresoInventario)
         {
-            // Aplicar un automapper aqui
-            var nuevoInventario = new Inventario
+            try
             {
-                IdProduct = ingresoInventario.IdProduct,
-                Quantity = ingresoInventario.Quantity,
-                IdAdmin = ingresoInventario.IdAdmin
-            };
-            nuevoInventario.EntryDate = DateTime.Now;
-            context.Inventarios.Add(nuevoInventario);
-            context.SaveChangesAsync();
+                // Aplicar un automapper aqui
+                var nuevoInventario = mapper.Map<Inventario>(ingresoInventario);
+
+                nuevoInventario.EntryDate = DateTime.Now;
+                context.Inventarios.Add(nuevoInventario);
+
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// Desactivar un producto del inventario
+        /// </summary>
+        /// <param name="idProducto"></param>
+        /// <returns></returns>
+        public async Task<bool> DesactivarProducto(int idProducto)
+        {
+            bool isExecuted = false;
+            try
+            {
+
+                var producto = await context.Productos.FindAsync(idProducto);
+                if (producto != null)
+                {
+                    producto.Activo = false;
+                    await context.SaveChangesAsync();
+                    isExecuted = true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            return isExecuted;
         }
 
         /// <summary>

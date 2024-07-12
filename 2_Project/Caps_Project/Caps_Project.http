@@ -21,12 +21,13 @@ Content-Type: application/json
 
 ###
 
-POST {{Caps_Project_HostAddress}}/inventario/almacenaproducto
+POST {{Caps_Project_HostAddress}}/inventario/actualizarprecio/
 Content-Type: application/json
 
 {
-  "ProductId": 1, 
-  "UnitPrice": 20
+  "ProductId": 2, 
+  "UnitPrice": 25
 }
 
 ###
+

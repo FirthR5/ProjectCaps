@@ -67,17 +67,11 @@ namespace Caps_Project.Controllers
         // Almacenar Producto
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<ActionResult> AlmacenaProducto([FromBody]NewProductoPriceDTO newProductPrice)
+        public async Task<ActionResult> AlmacenaProducto()
         {
             try
             {
-                InventarioService Serv_Inv = new InventarioService(contexto, mapper);
-                bool executionSuccessful = await Serv_Inv.InsertOrUpdateProductPrices(newProductPrice);
-                if (!executionSuccessful)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-
+               
                 return RedirectToAction(nameof(Index));
             }//
             catch
@@ -86,6 +80,7 @@ namespace Caps_Project.Controllers
             }
         }
 
+        //// TODO: Agregar redirecciones
         // Actualiza Precio de Producto
         /// <summary>
         /// Actualizar el precio del producto
@@ -94,11 +89,17 @@ namespace Caps_Project.Controllers
         /// <param name="collection"></param>
         /// <returns></returns>
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult ActualizarPrecio(int id, IFormCollection collection)
+        //[ValidateAntiForgeryToken]
+        public async Task<ActionResult> ActualizarPrecio([FromBody]NewProductoPriceDTO newProductPrice)
         {
             try
             {
+                 InventarioService Serv_Inv = new InventarioService(contexto, mapper);
+                bool executionSuccessful = await Serv_Inv.InsertOrUpdateProductPrices(newProductPrice);
+                if (!executionSuccessful)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch

@@ -67,11 +67,19 @@ namespace Caps_Project.Controllers
         // Almacenar Producto
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<ActionResult> AlmacenaProducto()
+        public async Task<ActionResult> AlmacenaProducto(IngresoInventarioDTO ingresoInventario)
         {
             try
             {
-               
+                // Productos + Product Prices
+                InventarioService Serv_Inv = new InventarioService(contexto, mapper);
+                bool queryExitoso = await Serv_Inv.IngresoProdInventario(ingresoInventario);
+
+                if (!queryExitoso)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
                 return RedirectToAction(nameof(Index));
             }//
             catch
@@ -94,7 +102,7 @@ namespace Caps_Project.Controllers
         {
             try
             {
-                 InventarioService Serv_Inv = new InventarioService(contexto, mapper);
+                InventarioService Serv_Inv = new InventarioService(contexto, mapper);
                 bool executionSuccessful = await Serv_Inv.InsertOrUpdateProductPrices(newProductPrice);
                 if (!executionSuccessful)
                 {
@@ -107,25 +115,29 @@ namespace Caps_Project.Controllers
                 return View();
             }
         }
-        // Deshabilita Producto
+        /// <summary>
+        // Deshabilita el Producto
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DisableProduct(int id, IFormCollection collection)
+        public async Task<ActionResult> DisableProduct(int id)
         {
             try
             {
+                InventarioService Serv_Inv = new InventarioService(contexto, mapper);
+                bool executionSuccessful = await Serv_Inv.DesactivarProducto(id);
+                if (!executionSuccessful)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
                 return View();
             }
-        }
-
-        // ????
-        public ActionResult Details(int id)
-        {
-            return View();
         }
 
         public async Task<ActionResult> GetListProdCat()

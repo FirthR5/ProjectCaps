@@ -155,7 +155,7 @@ namespace Caps_Project.Services
                 ProductoVenderService Serv_Inventario = new ProductoVenderService(context);
                 //Activarlo
                 bool IsActivated = await Serv_Inventario.DesactivarProducto(idProducto);
-                
+            
             }
             catch
             {
@@ -170,8 +170,7 @@ namespace Caps_Project.Services
         /// <returns>List<Producto></returns>
         public async Task<List<Producto>> List_TipoEmpleado()
         {
-            var query = context.Productos;
-            List<Producto> list = await query.ToListAsync();
+            var list = await context.Productos.ToListAsync();
             return list;
         }
     }

@@ -1,7 +1,10 @@
-﻿namespace Caps_Project.DTOs.OrdenDTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Caps_Project.DTOs.OrdenDTOs
 {
     public class ProductItemDTO
     {
+        [Key]
         public int IdItem { get; set; }
 
         public string ProductName { get; set; }    

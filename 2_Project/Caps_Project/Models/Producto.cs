@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caps_Project.Models;
 
 public partial class Producto
 {
+    [Key]
     public int IdProducto { get; set; }
 
     public string ProdName { get; set; } = null!;

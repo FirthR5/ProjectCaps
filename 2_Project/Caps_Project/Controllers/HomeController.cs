@@ -90,12 +90,12 @@ namespace Caps_Project.Controllers
 
 
         [Authorize(Roles = "ADMINISTRADOR")]
-        public IActionResult Admin()
+        public IActionResult Dashboard()
         {
             return View();
         }
         [Authorize(Roles = "EMPLEADO")]
-        public IActionResult Emp()
+        public IActionResult Inicio()
         {
 
             return View();

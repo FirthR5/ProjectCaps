@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Identity;
 using Caps_Project.DTOs.InventarioDTOs;
 using Caps_Project.Models;
 using Caps_Project.Services;
@@ -69,6 +70,19 @@ namespace Caps_Project.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult AlmacenaProducto(int IdProducto)
+        {
+            //TODO: Buscar producto
+            // Devolver: Nombre e IdProducto
+            return View();
+        }
+        [HttpGet]
+        public ActionResult ActualizarPrecio()
+        {
+            // Metodo de prubea para ver el Modal
+            return View();
+        }
         // Almacenar Producto
         [HttpPost]
         //[ValidateAntiForgeryToken]
@@ -78,6 +92,7 @@ namespace Caps_Project.Controllers
             {
                 // Productos + Product Prices
                 InventarioService Serv_Inv = new InventarioService(contexto, mapper);
+                //TODO: ingresoInventario.IdAdmin = ponerlo de C#
                 bool queryExitoso = await Serv_Inv.IngresoProdInventario(ingresoInventario);
 
                 if (!queryExitoso)

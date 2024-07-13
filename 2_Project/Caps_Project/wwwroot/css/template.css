@@ -1,0 +1,23 @@
+﻿/* ================= Responsive Media Queries ================= */
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+ @media (max-width: 576px) { /* Ajusta el tamaño según tus necesidades */
+	.navbar-fixed-bottom {
+	  position: fixed;
+      margin-bottom:0px;
+	  bottom: 0px; /*TODO: Arreglar el margin que tiene esta cosa*/
+	  width: 100%;
+	  z-index: 1030; /* Asegúrate de que esté por encima de otros elementos */
+	}
+    .footer{
+        margin-bottom:20px;
+    }
+	.navbar-brand{
+		display:none;
+	}
+}
+
+

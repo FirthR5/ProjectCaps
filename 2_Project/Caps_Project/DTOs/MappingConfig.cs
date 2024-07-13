@@ -30,11 +30,7 @@ namespace Caps_Project.DTOs
             CreateMap<NuevoProductoDTO, ProductPrice>()
                 .ForMember(name => name.UnitPrice,
                           opt => opt.MapFrom(src => src.UnitPrice))
-                .ForMember(name => name.StartDate,
-                          opt => opt.MapFrom(src => src.StartDate))
-                .ForMember(name => name.EndDate,
-                          opt => opt.MapFrom(src => src.EndDate))
-                               ;
+                                              ;
             CreateMap<IngresoInventarioDTO, Inventario>()
                 .ForMember(name => name.IdProduct,
                           opt => opt.MapFrom(src => src.IdProduct))

@@ -33,7 +33,11 @@ namespace Caps_Project.Controllers
 
             return View(listaProductos);
         }
-
+        [HttpGet]
+        public ActionResult RegistraNuevoProducto()
+        {
+            return View();
+        }
         // Registrar un Producto
         // TODO: Agregar redirecciones
         /// <summary>
@@ -41,6 +45,7 @@ namespace Caps_Project.Controllers
         /// </summary>
         /// <param name="nuevoProducto"></param>
         /// <returns></returns>
+        
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<ActionResult> RegistraNuevoProducto([FromBody] NuevoProductoDTO nuevoProducto)

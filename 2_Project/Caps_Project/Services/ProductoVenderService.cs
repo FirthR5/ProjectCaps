@@ -133,6 +133,7 @@ namespace Caps_Project.Services
         {
             decimal total = 0;  
 
+            // TODO: Saltarse lo que tienen 0 quantity items
             // Get: Lista de todos los productos del carrito temporal
             var ItemsCarritoTmp = await context.TempCarritos
                 .Select(m => new {m.IdItem, m.ProductPriceId}).ToListAsync();
@@ -174,6 +175,7 @@ namespace Caps_Project.Services
 
                     // Registrar productos Items (IdOrden a Items)
                     // Asignar el OrderId generado a los Product_Items
+                    // TODO: Saltarse lo que tienen 0 quantity items
                     foreach (var item in productItems){
                         item.TicketOrderId = orderReceipt.OrderId;
                     }

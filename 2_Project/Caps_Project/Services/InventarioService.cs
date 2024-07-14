@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Caps_Project.DTOs;
 using Caps_Project.DTOs.InventarioDTOs;
 using Caps_Project.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data;
+using System.Linq;
 
 namespace Caps_Project.Services
 {
@@ -141,37 +143,26 @@ namespace Caps_Project.Services
                 return false;
             }
         }
-        /// <summary>
-        /// Desactivar un producto del inventario
-        /// </summary>
-        /// <param name="idProducto"></param>
-        /// <returns></returns>
-        public async Task<bool> DesactivarProducto(int idProducto)
-        {
-            bool isExecuted = false;
-            try
-            {
-
-                ProductoVenderService Serv_Inventario = new ProductoVenderService(context);
-                //Activarlo
-                bool IsActivated = await Serv_Inventario.DesactivarProducto(idProducto);
-            
-            }
-            catch
-            {
-                return false;
-            }
-            return isExecuted;
-        }
-
+       
         /// <summary>
         /// Lista de Productos
         /// </summary>
         /// <returns>List<Producto></returns>
-        public async Task<List<Producto>> List_TipoEmpleado()
+        public async Task<PaginationProductoDTO> List_TipoEmpleado(PaginationDTO paginationDTO)
         {
-            var list = await context.Productos.ToListAsync();
-            return list;
+            var query = context.Productos;
+
+            paginationDTO.recordsTotal = await query.CountAsync(); 
+            PaginationProductoDTO paginationProductoDTO = new PaginationProductoDTO(){
+                paginationDTO = paginationDTO
+            } ;
+
+            paginationProductoDTO.listProductos = await query.Skip(paginationDTO.skip)
+                .Take(paginationDTO.pageSize).ToListAsync();
+
+
+
+            return paginationProductoDTO;
         }
     }
 }

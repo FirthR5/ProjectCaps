@@ -3,9 +3,9 @@
 
 // Write your JavaScript code.
 
-upda$(document).ready(function () {
-    $('.navbar-toggler').click(function () {
-        var target = $(this).data('bs-target');
-        $('.navbar-collapse').not(target).collapse('hide');
-    });
-});
+//update(document).ready(function () {
+//    $('.navbar-toggler').click(function () {
+//        var target = $(this).data('bs-target');
+//        $('.navbar-collapse').not(target).collapse('hide');
+//    });
+//});

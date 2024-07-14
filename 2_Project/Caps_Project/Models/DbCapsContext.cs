@@ -4,6 +4,7 @@ using Caps_Project.DTOs.LoginDTOs;
 using Caps_Project.DTOs.OrdenDTOs;
 using Caps_Project.Models.View.DTOs.LoginDTOs;
 using Microsoft.EntityFrameworkCore;
+using Caps_Project.DTOs.InventarioDTOs;
 
 namespace Caps_Project.Models;
 
@@ -230,4 +231,6 @@ public partial class DbCapsContext : DbContext
     public DbSet<vwDatosUsuarioDTO> VwDatosUsuarios { get; set; }
     public DbSet<ProductItemDTO> ProductItemsDTOs { get; set; }
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+public DbSet<Caps_Project.DTOs.InventarioDTOs.NuevoProductoDTO> NuevoProductoDTO { get; set; } = default!;
 }

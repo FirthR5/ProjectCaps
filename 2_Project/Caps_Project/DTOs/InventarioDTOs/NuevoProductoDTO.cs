@@ -1,8 +1,11 @@
-﻿namespace Caps_Project.DTOs.InventarioDTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Caps_Project.DTOs.InventarioDTOs
 {
     public class NuevoProductoDTO
     {
         // Product
+        [Key]
         public string ProdName { get; set; } = null!;
 
         public int Stock { get; set; }

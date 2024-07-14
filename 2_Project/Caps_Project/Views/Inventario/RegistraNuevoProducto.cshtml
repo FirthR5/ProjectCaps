@@ -1,85 +1,128 @@
-﻿<form>
-    <!-- Grid row -->
-    <div class="row">
+﻿@model Caps_Project.DTOs.InventarioDTOs.NuevoProductoDTO
+
+<form class="container" id="myForm" method="post"
+    asp-action="RegistraNuevoProducto">
+        @Html.AntiForgeryToken()
+     <div class="row">
         <!-- Grid column -->
-        <div class="col-md-6">
-            <p class="mb-0">ProdName</p>
-            <!-- Material input -->
+        <div class="col-md-12">
+            <p class="mb-0">Nombre del producto</p>
             <div class="input-group mb-3">
-                <input type="email" class="form-control" id="inputProdName placeholder="Email" />
+                <input type="text" asp-for="ProdName" class="form-control" 
+                id="inputProdName" placeholder="Nombre del producto" />
+                <span asp-validation-for="ProdName" class="text-danger"></span>
             </div>
         </div>
-        <!-- Grid column -->
-        <!-- Grid column -->
-        <div class="col-md-6">
-            <p class="mb-0">Stock</p>
-            <!-- Material input -->
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" id="inputStock" placeholder="Stock" />
-            </div>
-        </div>
-        <!-- Grid column -->
     </div>
-    <!-- Grid row -->
-    <!-- Grid row -->
+    
     <div class="row">
         <!-- Grid column -->
         <div class="col-md-12">
             <p class="mb-0">Descripcion</p>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" id="inputDescripcion" placeholder="Descripcion" />
-            </div>
-        </div>
-        <!-- Grid column -->
-    </div>
-    <!-- Grid row -->
-    <div class="row">
-        <!-- Grid column -->
-        <div class="col-md-6">
-            <p class="mb-0">IdProdCategory</p>
-            <!-- Material input -->
-            <div class="input-group mb-4">
-                <input type="text" class="form-control" id="inpuIdProdCategory" placeholder="IdProdCategory" />
-            </div>
-        </div>
-        <!-- Grid column -->
-        <!-- Grid column -->
-        <div class="col-md-6">
-            <p class="mb-0">Activo</p>
-            <!-- Material input -->
-            <div class="input-group mb-4">
-                <input type="text" class="form-control" id="inputActivo" placeholder="Activo" />
-            </div>
-        </div>
-        <!-- Grid column -->
-    </div>
+                <input type="text" asp-for="Descripcion" class="form-control" id="inputDescripcion" placeholder="Descripcion" />
+                 <span asp-validation-for="Descripcion" class="text-danger"></span>
 
+            </div>
+        </div>
+    </div>
     <!-- Grid row -->
     <div class="row">
-        <!-- Grid column -->
         <div class="col-md-6">
+            <p class="mb-0">Categoria del Producto</p>
+            <!-- Material input -->
+            <div class="input-group mb-4">
+			    <select class="form-select form-control" asp-for="IdProdCategory" id="inpuIdProdCategory">
+					<option value="">Seleccione una categoría</option>
+			    </select>
+                <span asp-validation-for="IdProdCategory" class="text-danger"></span>
+
+            </div>
+        </div>
+       <div class="col-md-6">
             <p class="mb-0">UnitPrice</p>
             <!-- Material input -->
             <div class="input-group mb-4">
-                <input type="text" class="form-control" id="inputUnitPrice" placeholder="UnitPrice" />
+                <input type="number" class="form-control"  asp-for="UnitPrice"  id="inputUnitPrice" placeholder="UnitPrice" />
+                <span asp-validation-for="UnitPrice" class="text-danger"></span>
+
             </div>
         </div>
-        <!-- Grid column -->
-        <!-- Grid column -->
-        <div class="col-md-6">
-            <p class="mb-0">StartDate</p>
-            <!-- Material input -->
-            <div class="input-group mb-4">
-                <input type="text" class="form-control" id="inputStartDate" placeholder="11206-1117" />
-            </div>
-        </div>
-        <!-- Grid column -->
     </div>
-    <!-- Grid row -->
+   <div class="row">
+        <div class="col-md-6">
+            <p class="mb-0">Activo</p>
+            <div class="input-group mb-4">
+                <select class="form-select form-control"  asp-for="Activo" id="inputActivo">
+                    <option value="true">Activo</option>
+				    <option value="false">Inactivo</option>
+				</select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <p class="mb-0">Stock</p>
+            <div class="input-group mb-3">
+                <input type="number"  asp-for="Stock" class="form-control" id="inputStock" placeholder="Stock" />
+                <span asp-validation-for="Stock" class="text-danger"></span>
+            </div>
+        </div>
+    </div> 
     <div class="d-flex justify-content-center">
-        <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-md">Registrar Nuevo Producto</button>
+        <button id="btnSummitForm" class="btn btn-primary btn-md">Registrar Nuevo Producto</button>
     </div>
 </form>
 <br />
 <br />
 <br />
+
+
+
+@* @section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnSummitForm").click(function (event) {
+                event.preventDefault(); // Evita el envío predeterminado del formulario
+                console.log("Submit button clicked! Add your logic here.");
+
+                $("#loaderDiv").show();
+                var myformdata = $("#myForm").serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("RegistraNuevoProductou", "Inventario")",
+                    data: myformdata,
+                    success: function () {
+                        $("#loaderDiv").hide();
+                        window.location.href = "/Home/Login";
+                    },
+                    error: function (error) {
+                        console.error("AJAX request error:", error);
+                    }
+                });
+            });
+        });
+    </script>
+} *@
+ @section Scripts{
+<script type="text/javascript">
+		$(document).ready(function () {
+		  $.ajax({
+			url: '/Inventario/GetListProdCat', // Adjust the URL if necessary
+			type: 'GET',
+			async: true, // Asynchronous request by default (optional)
+			dataType: 'json', // Expected response format (may need adjustment)
+			contentType: 'application/json', // Request content type (may need adjustment)
+			error: function (xhr) {
+			  $("#msgError").html('Error al comunicarse con el controlador'); // Use .text() for text content
+			  $("#DivMsgError").show();
+			},
+			success: function (result) { // Use result instead of data
+			  var optionsHtml = '';
+			  for (var i = 0; i < result.length; i++) {
+				optionsHtml += '<option value="' + result[i].idCategory + '">' + result[i].categoryName + '</option>';
+			  }
+			  $('#inpuIdProdCategory').html(optionsHtml);
+			}
+		  });
+		});
+</script>
+}

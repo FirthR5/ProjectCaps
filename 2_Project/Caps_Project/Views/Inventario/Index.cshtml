@@ -1,0 +1,235 @@
+﻿
+@{
+	ViewData["Title"] = "Inventario | Inicio";
+}
+
+<link href="~/lib/datatables/css/jquery.dataTables.css" rel="stylesheet" />
+<link href="~/lib/datatables/css/dataTables.bootstrap4.css" rel="stylesheet" />
+
+<div class="container pt-5">
+
+	<h1>Inventario | Inicio</h1>
+
+	<p class="pb-3 pt-3">
+		@* <a asp-action="Create">Create New</a> *@
+        @* <button type="button" class="btn btn-info btn-sm px-3 fs-6" onclick ="openModal(1)" >
+			<i class="bi bi-plus-square"></i>
+			Registrar nuevo producto
+		</button> *@
+		<button type="button" class="btn btn-info btn-sm px-3 fs-6" onclick="location.href = '@Url.Action("RegistraNuevoProducto", "Inventario")'">
+			<i class="bi bi-plus-square"></i>
+			Registrar nuevo producto
+		</button>
+	</p>
+
+    <div class="card shadow-2-strong mb-5" style="background-color: #f5f7fa;">
+        <div class="card-body">
+            <div class="table-responsive">
+
+				<table id="tb_productos"
+                       class="table table-sm table-borderless" style="width:100%">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nombre</th>
+							<th>Stock</th>
+							<th>Categoria</th>
+							<th>Descripcion</th>
+							<th>Activo</th>
+                            <th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- Modals -->
+<!-- Product ParcialView -->
+<div class="modal fade" id="ProductModal" tabindex="-1" aria-labelledby="ProductModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="ProductModalLabel">Inventario</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body" id="ProductModalBody">
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				@* <button type="button" class="btn btn-primary">Si, Guardar cambios</button> *@
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Editar Modal -->
+<div class="modal fade" id="EditarProductModal" tabindex="-1" aria-labelledby="EditarProductModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="EditarProductModalLabel">Editar Producto</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				Producto "<span id="nombreProductoEdit"></span>" <span id="idProductoEdit" class="d-none"></span>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Cerrar</button>
+				<button type="button" class="btn btn-primary">Si, Guardar cambios</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Disable Product Modal -->
+<div class="modal fade" id="DisableProductModal" tabindex="-1" aria-labelledby="DisableProductModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="DisableProductModalLabel">Deshabilitar Producto</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p id="idProductDisable" class="d-none"></p>
+				<p>¿Esta seguro que quiere deshabilitar el producto "<span id="nombreProductoDisable"></span>"?</p>
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Cerrar</button>
+				<button type="button" class="btn btn-primary" onclick="DeleteProducto()">Si, Guardar cambios</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Update Price Modal -->
+<div class="modal fade" id="UpdateProductModal" tabindex="-1" aria-labelledby="UpdateProductModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="UpdateProductModalLabel">Actualizar Precio Producto</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form class="w-100" style="max-width: 650px;">
+
+					<!-- example 1 -->
+					<div class="mb-5">
+
+
+						<input type="text" class="none d-none" id="idProductoUpdate" />
+						<p>Nombre de Producto: <span id="nombreProductoUpdate"></span></p>
+						<div class="row mb-3">
+							<div class="col-md-2 d-flex align-items-center">
+								<p class="mb-0 p-0">Nuevo Precio</p>
+							</div>
+							<div class="col-md-10">
+								<div data-mdb-input-init class="form-outline">
+									<input type="number" id="typeUnitPrice" min="0" value="0" step="0.01" class="form-control" placeholder="Unit Price" />
+									<label class="form-label d-lg-none none" for="typeUnitPrice"></label>
+								</div>
+							</div>
+						</div>
+
+						<button type="button" class="btn btn-primary" onclick="ChangePriceProducto()">Actualizar Precio</button>
+
+					</div>
+					<!-- example 1 -->
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+<!-- Button trigger modal -->
+@* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#DisableProductModal">
+	Launch demo modal
+</button> *@
+
+
+@section Scripts{
+
+	<script src="~/js/customerDatatable.js"></script>
+	<script src="~/lib/datatables/js/jquery.dataTables.js"></script>
+	<script src="~/lib/datatables/js/dataTables.bootstrap4.js"></script>
+
+
+	<script type="text/javascript">
+        $(document).ready(function () {
+            $("#tb_productos").DataTable({
+                "processing": true,
+                "serverSide": true,	
+                "ajax": {
+                    "url": '@Url.Action("ListaInventario", "Inventario")',
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.draw = d.draw;
+                        d.start = d.start;
+                        d.length = d.length;
+                    }
+                },
+				columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }
+                ],
+
+                "columns": [
+                    { "data": "idProducto", "autoWidth": true },
+                    { "data": "prodName", "autoWidth": true },
+                    { "data": "stock", "autoWidth": true },
+                    { "data": "idProdCategory", "autoWidth": true },
+                    { "data": "descripcion", "autoWidth": true },
+                    { "data": "activo", "autoWidth": true },
+                    {
+                        "render": function (data,type, row) {
+							return "<button type='button' class='btn btn-success mx-1'  onclick='openModal(2)'><i class='bi bi-arrow-down-up'></i></button>"+
+								"<a href='#' class='btn btn-danger' onclick=DeleteProductoModal('" + row.idProducto + "','" + row.prodName + "'); ><i class='bi bi-trash'></i></a> " +
+								"<a href='#' class='btn btn-primary' onclick=EditProductoModal('" + row.idProducto + "','" + row.prodName + "'); ><i class='bi bi-pencil-square'></i></a> " +
+								"<a href='#' class='btn btn-warning' onclick=ChangePriceProductoModal('" + row.idProducto + "','" + row.prodName + "'); ><i class='bi bi-currency-dollar'></i></a>";
+                        }
+                    },
+                ],
+                "lengthChange":false,
+                "paging": true,
+                "ordering": true, 
+                "searching": false,
+                "filter":false,
+                dom: "Bfrtip",
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+                },
+                "orderCellsTop": false,
+                "fixedHeader": true,
+           
+            });
+
+        });
+
+       
+		
+    </script>
+
+}
+
+<script src="~/js/Inventario/InventarioPage.js" defer></script>
+<link rel="stylesheet" href="~/css/Inventario/InventarioTable.css" />

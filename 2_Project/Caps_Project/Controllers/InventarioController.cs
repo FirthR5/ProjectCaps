@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure.Identity;
+using Caps_Project.DTOs;
 using Caps_Project.DTOs.InventarioDTOs;
 using Caps_Project.Models;
 using Caps_Project.Services;
@@ -17,7 +18,7 @@ namespace Caps_Project.Controllers
             this.contexto = context;
             this.mapper = mapper;
         }
-
+        
         // GET: InventarioController
         public ActionResult Index()
         {
@@ -27,18 +28,41 @@ namespace Caps_Project.Controllers
         /// Obtener lista de los productos activos del inventario
         /// </summary>
         /// <returns></returns>
-        public async Task<ActionResult> ListaInventario()
+        [HttpPost]
+        public async Task<JsonResult> ListaInventario()
         {
-            InventarioService Serv_Inventario = new InventarioService(contexto);
-            var listaProductos = await Serv_Inventario.List_TipoEmpleado();
+            var draw = Request.Form["draw"].FirstOrDefault();
+            var start = Request.Form["start"].FirstOrDefault();
+            var length = Request.Form["length"].FirstOrDefault();
 
-            return View(listaProductos);
+            PaginationDTO paginationDTO = new PaginationDTO(){
+                pageSize = length != null ? Convert.ToInt32(length) : 0,
+                skip = start != null ? Convert.ToInt32(start) : 0
+            };
+            
+            InventarioService Serv_Inventario = new InventarioService(contexto);
+            var rawProductos = await Serv_Inventario.List_TipoEmpleado(paginationDTO);
+            var listaProductos = mapper.Map<List<ProductoDTO>>(rawProductos.listProductos);
+
+            return Json(new
+            {
+                Draw = draw,
+                RecordsTotal = rawProductos.paginationDTO.recordsTotal,
+                RecordsFiltered = rawProductos.paginationDTO.recordsTotal,
+                Data = listaProductos
+            });
         }
+
+
         [HttpGet]
-        public ActionResult RegistraNuevoProducto()
+        public /*PartialViewResult*/ IActionResult RegistraNuevoProducto()
         {
+            //string parcialView = "RegistraNuevoProducto";
+
+            //return PartialView(parcialView);
             return View();
         }
+
         // Registrar un Producto
         // TODO: Agregar redirecciones
         /// <summary>
@@ -46,36 +70,39 @@ namespace Caps_Project.Controllers
         /// </summary>
         /// <param name="nuevoProducto"></param>
         /// <returns></returns>
-        
+        
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegistraNuevoProducto([FromBody] NuevoProductoDTO nuevoProducto)
+        public async Task<ActionResult> RegistraNuevoProducto([FromForm] NuevoProductoDTO nuevoProducto)
         {
 
             try
             {
+                if(!ModelState.IsValid) { TempData["Error"] = "Invalid format"; return View("RegistraNuevoProducto", nuevoProducto); }
                 // Productos + Product Prices
                 InventarioService Serv_Inv = new InventarioService(contexto, mapper);
                 bool queryExitoso = await Serv_Inv.RegistrarProducto(nuevoProducto);
-                if ( !queryExitoso)
+                if (!queryExitoso)
                 {
-                    return RedirectToAction(nameof(Index));
+                    TempData["Error"] = "Invalid format"; return View("RegistraNuevoProducto");
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("index");
             }
             catch
             {
-                return View();
+                    TempData["Error"] = "Invalid format"; return View("RegistraNuevoProducto");
             }
         }
 
         [HttpGet]
-        public ActionResult AlmacenaProducto(int IdProducto)
+        public PartialViewResult AlmacenaProducto(int IdProducto)
         {
             //TODO: Buscar producto
             // Devolver: Nombre e IdProducto
-            return View();
+            string parcialView = "AlmacenaProducto";
+
+            return PartialView(parcialView);
         }
         [HttpGet]
         public ActionResult ActualizarPrecio()
@@ -141,31 +168,35 @@ namespace Caps_Project.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<ActionResult> DisableProduct(int id)
         {
             try
             {
-                InventarioService Serv_Inv = new InventarioService(contexto, mapper);
+				ProductoVenderService Serv_Inv = new ProductoVenderService(contexto);
                 bool executionSuccessful = await Serv_Inv.DesactivarProducto(id);
                 if (!executionSuccessful)
                 {
-                    return RedirectToAction(nameof(Index));
+                    return NotFound();
                 }
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
             catch
             {
-                return View();
+                return NotFound();
             }
         }
 
-        public async Task<ActionResult> GetListProdCat()
+        /// <summary>
+        /// Obtener la lista de la categoria de los productos
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> GetListProdCat()
         {
             InventarioService Serv_Inv = new InventarioService(contexto);
             List<ProductCategory> lista = await Serv_Inv.ListProductCategorias();
             var listaCategorias = mapper.Map<List<ProdCategoryDTO>>(lista);
-            return Ok(listaCategorias);
+            return Json(listaCategorias);
         }
     }
 }

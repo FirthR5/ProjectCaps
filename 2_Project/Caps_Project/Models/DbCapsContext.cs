@@ -39,6 +39,8 @@ public partial class DbCapsContext : DbContext
 
     public virtual DbSet<TipoEmpleado> TipoEmpleados { get; set; }
 
+    public virtual DbSet<VwDatosUsuario> VwDatosUsuarios { get; set; }
+
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //    => optionsBuilder.UseSqlServer("name=DevDB");
 
@@ -96,7 +98,7 @@ public partial class DbCapsContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Inventar__3214EC070F46CF1A");
 
-            entity.ToTable("Inventario");
+            entity.ToTable("Inventario", tb => tb.HasTrigger("TR_INVENTARY_QUANTITY"));
 
             entity.Property(e => e.EntryDate).HasColumnType("datetime");
             entity.Property(e => e.IdAdmin)
@@ -149,7 +151,7 @@ public partial class DbCapsContext : DbContext
         {
             entity.HasKey(e => e.IdItem).HasName("PK__Product___51E84262490C87B2");
 
-            entity.ToTable("Product_Items");
+            entity.ToTable("Product_Items", tb => tb.HasTrigger("TR_REDUCESTOCK"));
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.ProductPriceId).HasColumnName("ProductPriceID");
@@ -223,14 +225,31 @@ public partial class DbCapsContext : DbContext
                 .IsUnicode(false);
         });
 
-        // Add option to use the SQL View
-        modelBuilder.Entity<vwDatosUsuarioDTO>().HasNoKey().ToView("vw_Datos_Usuario");
+		// Add option to use the SQL View
+		//modelBuilder.Entity<vwDatosUsuarioDTO>().HasNoKey().ToView("vw_Datos_Usuario");
+		modelBuilder.Entity<VwDatosUsuario>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vw_Datos_Usuario");
+
+            entity.Property(e => e.EmpTypeName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.IdEmpleado)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.NombreCompleto)
+                .HasMaxLength(302)
+                .IsUnicode(false);
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }
-    public DbSet<vwDatosUsuarioDTO> VwDatosUsuarios { get; set; }
-    public DbSet<ProductItemDTO> ProductItemsDTOs { get; set; }
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+	//public DbSet<vwDatosUsuarioDTO> VwDatosUsuarios { get; set; }
+	public DbSet<ProductItemDTO> ProductItemsDTOs { get; set; }
+	partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
 public DbSet<Caps_Project.DTOs.InventarioDTOs.NuevoProductoDTO> NuevoProductoDTO { get; set; } = default!;
 }

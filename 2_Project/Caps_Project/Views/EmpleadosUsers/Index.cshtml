@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Inventario | Inicio";
+}
+<link href="~/lib/datatables/css/jquery.dataTables.css" rel="stylesheet" />
+<link href="~/lib/datatables/css/dataTables.bootstrap4.css" rel="stylesheet" />
+
+<div class="container pt-5">
+	<h1>Empleados | Inicio</h1>
+
+	<p class="pb-3 pt-3">
+		<button type="button" class="btn btn-info btn-sm px-3 fs-6" onclick="location.href = '@Url.Action("AgregarEmpleado", "EmpleadosUsers")'">
+			<i class="bi bi-plus-square"></i>
+			Registrar nuevo empleado
+		</button>
+	</p>
+	<div class="card shadow-2-strong mb-5" style="background-color: #f5f7fa;">
+		<div class="card-body">
+			<div class="table-responsive">
+
+				<table id="tblEmpleados"
+					   class="table table-sm table-borderless" style="width:100%">
+					<thead>
+						<tr>
+							<th>User ID</th>
+							<th>Nombre</th>
+							<th>Tipo Empleado</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Disable Product Modal -->
+<div class="modal fade" id="DisableProductModal" tabindex="-1" aria-labelledby="DisableProductModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="DisableProductModalLabel">Deshabilitar Producto</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p id="idProductDisable" class="d-none"></p>
+				<p>¿Esta seguro que quiere deshabilitar el producto "<span id="nombreProductoDisable"></span>"?</p>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Cerrar</button>
+				<button type="button" class="btn btn-primary" onclick="DeleteProducto()">Si, Guardar cambios</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@section Scripts {
+
+	<script src="~/js/customerDatatable.js"></script>
+	<script src="~/lib/datatables/js/jquery.dataTables.js"></script>
+	<script src="~/lib/datatables/js/dataTables.bootstrap4.js"></script>
+
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$("#tblEmpleados").DataTable({
+				"processing": true,
+				"serverSide": true,
+				"ajax": {
+					"url": '@Url.Action("ListaEmpleados", "EmpleadosUsers")',
+					"type": "POST",
+					"datatype": "json",
+					"data": function (d) {
+						d.draw = d.draw;
+						d.start = d.start;
+						d.length = d.length;
+					}
+				},
+				columnDefs: [
+					{
+						targets: 0,
+						visible: true
+					},
+				],
+
+				"columns": [
+					{ "data": "idEmpleado", "autoWidth": false },
+					{ "data": "nombreCompleto", "autoWidth": true },
+					{ "data": "empTypeName", "autoWidth": true },
+					{
+						"render": function (data, type, row) {
+							return `
+									<a class='btn btn-danger' onclick="DeleteProductoModal('');">
+										<i class='bi bi-trash'></i>
+							`;
+						}, "autoWidth": true
+					},
+				],
+				"lengthChange": false,
+				"paging": true,
+				"ordering": true,
+				"searching": false,
+				"filter": false,
+				dom: "Bfrtip",
+				language: {
+					url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+				},
+				"orderCellsTop": false,
+				"fixedHeader": true,
+
+			});
+
+		});
+
+
+
+	</script>
+
+}
+
+@* <script src="~/js/Inventario/InventarioPage.js" defer></script> *@
+@* <link rel="stylesheet" href="~/css/Inventario/InventarioTable.css" /> *@

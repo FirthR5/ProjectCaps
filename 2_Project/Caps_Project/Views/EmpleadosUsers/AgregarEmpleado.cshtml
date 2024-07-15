@@ -1,0 +1,107 @@
+﻿@model Caps_Project.DTOs.EmpleadoDTOs.InsertEmpleadoDTO
+
+@{
+    ViewData["Title"] = "AgregarEmpleado";
+}
+
+<h1>AgregarEmpleado</h1>
+
+<h4>Empleado</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AgregarEmpleado">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApPaterno" class="control-label"></label>
+                <input asp-for="ApPaterno" class="form-control" />
+                <span asp-validation-for="ApPaterno" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApMaterno" class="control-label"></label>
+                <input asp-for="ApMaterno" class="form-control" />
+                <span asp-validation-for="ApMaterno" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Contrasena" class="control-label"></label>
+                <input asp-for="Contrasena"  type="password" class="form-control" />
+                <span asp-validation-for="Contrasena" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmployeeType" class="control-label"></label>
+                <select asp-for="EmployeeType" class="form-control" asp-items="ViewBag.EmployeeType" id="inpEmployeeType">
+                    <option value="">Seleccione una categoría</option>
+
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Turno" class="control-label"></label>
+                <select asp-for="Turno" class="form-control" asp-items="ViewBag.Turno"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@* <div>
+    <a asp-action="Index">Back to List</a>
+</div> *@
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                url: '/EmpleadosUsers/GetListaTipoEmp', // Adjust the URL if necessary
+                type: 'GET',
+                async: true, // Asynchronous request by default (optional)
+                dataType: 'json', // Expected response format (may need adjustment)
+                contentType: 'application/json', // Request content type (may need adjustment)
+                error: function (xhr) {
+                    $("#msgError").html('Error al comunicarse con el controlador'); // Use .text() for text content
+                    $("#DivMsgError").show();
+                },
+                success: function (result) { // Use result instead of data
+                    var optionsHtml = '';
+                    for (var i = 0; i < result.length; i++) {
+                        optionsHtml += '<option value="' + result[i].idEmployeeType + '">' + result[i].empTypeName + '</option>';
+                    }
+                    $('#inpEmployeeType').html(optionsHtml);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+
+            $.ajax({
+                url: '/EmpleadosUsers/GetListaTurnos', // Adjust the URL if necessary
+                type: 'GET',
+                async: true, // Asynchronous request by default (optional)
+                dataType: 'json', // Expected response format (may need adjustment)
+                contentType: 'application/json', // Request content type (may need adjustment)
+                error: function (xhr) {
+                    $("#msgError").html('Error al comunicarse con el controlador'); // Use .text() for text content
+                    $("#DivMsgError").show();
+                },
+                success: function (result) { // Use result instead of data
+                    var optionsHtml = '';
+                    for (var i = 0; i < result.length; i++) {
+                        console.log(result[i])
+                        optionsHtml += '<option value="' + result[i] + '">' + result[i] + '</option>';
+                    }
+                    $('#Turno').html(optionsHtml);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+
+        });
+    </script>
+}

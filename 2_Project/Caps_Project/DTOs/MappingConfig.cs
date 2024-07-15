@@ -36,8 +36,8 @@ namespace Caps_Project.DTOs
                           opt => opt.MapFrom(src => src.IdProduct))
                  .ForMember(name => name.Quantity,
                           opt => opt.MapFrom(src => src.Quantity))
-                  .ForMember(name => name.IdAdmin,
-                          opt => opt.MapFrom(src => src.IdAdmin))
+                  //.ForMember(name => name.IdAdmin,
+                  //        opt => opt.MapFrom(src => src.IdAdmin))
                   ;
             CreateMap<EditarProductoDTO, Producto>();
             CreateMap<EditarProductoDTO, Producto>().ReverseMap();

@@ -55,16 +55,13 @@ namespace Caps_Project.Controllers
 
 
         [HttpGet]
-        public /*PartialViewResult*/ IActionResult RegistraNuevoProducto()
+        public IActionResult RegistraNuevoProducto()
         {
-            //string parcialView = "RegistraNuevoProducto";
 
-            //return PartialView(parcialView);
             return View();
         }
 
         // Registrar un Producto
-        // TODO: Agregar redirecciones
         /// <summary>
         /// Registrar productos
         /// </summary>
@@ -112,9 +109,8 @@ namespace Caps_Project.Controllers
         }
         // Almacenar Producto
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<ActionResult> AlmacenaProducto(IngresoInventarioDTO ingresoInventario)
-        {
+		public async Task<ActionResult> AlmacenaProducto([FromBody] IngresoInventarioDTO ingresoInventario)
+		{
             try
             {
                 // Productos + Product Prices
@@ -124,18 +120,17 @@ namespace Caps_Project.Controllers
 
                 if (!queryExitoso)
                 {
-                    return RedirectToAction(nameof(Index));
-                }
+					return NotFound();
+				}
 
-                return RedirectToAction(nameof(Index));
-            }
+				return Ok(new { success = true });
+			}
             catch
             {
-                return View();
-            }
+				return NotFound();
+			}
         }
 
-        //// TODO: Agregar redirecciones
         // Actualiza Precio de Producto
         /// <summary>
         /// Actualizar el precio del producto
@@ -145,23 +140,24 @@ namespace Caps_Project.Controllers
         /// <returns></returns>
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<ActionResult> ActualizarPrecio([FromBody]NewProductoPriceDTO newProductPrice)
+        public async Task<ActionResult> ActualizarPrecio([FromBody] NewProductoPriceDTO newProductPrice)
         {
             try
             {
                 InventarioService Serv_Inv = new InventarioService(contexto, mapper);
                 bool executionSuccessful = await Serv_Inv.InsertOrUpdateProductPrices(newProductPrice);
+
                 if (!executionSuccessful)
                 {
-                    return RedirectToAction(nameof(Index));
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+					return NotFound();
+				}
+				return Ok(new { success = true });
+			}
+			catch
             {
-                return View();
-            }
-        }
+				return NotFound();
+			}
+		}
         /// <summary>
         // Deshabilita el Producto
         /// </summary>

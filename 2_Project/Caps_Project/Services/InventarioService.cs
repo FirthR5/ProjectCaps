@@ -127,20 +127,26 @@ namespace Caps_Project.Services
         /// <param name="ingresoInventario"></param>
         public async Task<bool> IngresoProdInventario(IngresoInventarioDTO ingresoInventario)
         {
-            try
+            using (var transaction = context.Database.BeginTransaction())
             {
-                // Aplicar un automapper aqui
-                var nuevoInventario = mapper.Map<Inventario>(ingresoInventario);
+                try
+                {
+                    // Aplicar un automapper aqui
+                    var nuevoInventario = mapper.Map<Inventario>(ingresoInventario);
 
-                nuevoInventario.EntryDate = DateTime.Now;
-                context.Inventarios.Add(nuevoInventario);
+					nuevoInventario.EntryDate = DateTime.Now;
+					nuevoInventario.IdAdmin ="ADM-000001";
+					context.Inventarios.Add(nuevoInventario);
 
-                await context.SaveChangesAsync();
-                return true;
-            }
-            catch(Exception ex)
-            {
-                return false;
+                    await context.SaveChangesAsync();
+					transaction.Commit();
+					return true;
+                }
+                catch (Exception ex)
+                {
+					transaction.Rollback();
+					return false;
+                }
             }
         }
        

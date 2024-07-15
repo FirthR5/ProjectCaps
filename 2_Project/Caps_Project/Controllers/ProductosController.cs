@@ -18,6 +18,10 @@ namespace Caps_Project.Controllers
             this.contexto = context;
             this.mapper = mapper;
         }
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         #region Carrito Item
         /// <summary>

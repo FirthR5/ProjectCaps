@@ -10,13 +10,13 @@ namespace Caps_Project.Services
     public class ProductoVenderService : BaseService
     {
         public ProductoVenderService(DbCapsContext context) : base(context) { }
-        /// <summary>
-        ///  Desactivar productos por ID
-        /// (Llamado por InventarioController)
-        /// </summary>
-        /// <param name="IdProducto"></param>
-        /// <returns></returns>
-        public async Task<bool> DesactivarProducto(int IdProducto)
+		/// <summary>
+		///  Desactivar producto del inventario por ID
+		/// (Llamado por InventarioController)
+		/// </summary>
+		/// <param name="IdProducto"></param>
+		/// <returns></returns>
+		public async Task<bool> DesactivarProducto(int IdProducto)
         {
             var producto = context.Productos.FirstOrDefault(p => p.IdProducto == IdProducto);
 

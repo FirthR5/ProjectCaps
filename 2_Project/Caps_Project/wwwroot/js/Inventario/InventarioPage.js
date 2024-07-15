@@ -8,51 +8,24 @@ var changePriceModal = new bootstrap.Modal(document.getElementById('UpdateProduc
 var editModal = new bootstrap.Modal(document.getElementById('EditarProductModal'), {
     keyboard: false
 });
+var quantityModal = new bootstrap.Modal(document.getElementById('ProductModal'), {
+    keyboard: false
+});
 
+function quantityOpenModal(id, nombre) {
+   document.getElementById('idProductoQuantity').innerHTML = id;
+   document.getElementById('nombreProductoQuantity').innerHTML = nombre;
+   document.getElementById('typeQuantity').value = "0"; 
 
-function openModal(tipoModal) {
-    if (tipoModal == 1) {
-        $.ajax({
-            url: '/Inventario/RegistraNuevoProducto',
-            type: 'GET',
-            success: function (data) {
-                $('#ProductModalBody').html(data);
-                $('#ProductModal').modal('hide');
-                $('#ProductModal').modal('show');
-
-            },
-            error: function () {
-                alert('Error occurred while fetching data.');
-            }
-        });
-    }
-    if (tipoModal == 2) {
-        $.ajax({
-            url: '/Inventario/AlmacenaProducto',
-            type: 'GET',
-            success: function (data) {
-                $('#ProductModalBody').html(data);
-                $('#ProductModal').modal('hide');
-                $('#ProductModal').modal('show');
-
-            },
-            error: function () {
-                alert('Error occurred while fetching data.');
-            }
-        });
-
-    }
+    quantityModal.show();
 }
 
 function ChangePriceProductoModal(id, nombre) {
     document.getElementById('idProductoUpdate').innerHTML = id;
     document.getElementById('nombreProductoUpdate').innerHTML = nombre;
 
+   document.getElementById('typeUnitPrice').value = "0"; 
     changePriceModal.show();
-    
-
-    // Almacena el ID del producto en el modal
-    // $('#updatePriceModal').data('id', id).modal('show');
 }
 
 
@@ -68,26 +41,58 @@ function EditProductoModal(id, nombre) {
     document.getElementById('nombreProductoEdit').innerHTML = nombre;
 
     editModal.show();
-    // Almacena el ID del producto en el modal
-    // $('#updatePriceModal').data('id', id).modal('show');
 }
 
 // ================
+function AlmacenaProducto(id, nombre) {
+    var idProducto = parseInt(document.getElementById('idProductoQuantity').innerHTML); 
+    var nombre = document.getElementById('nombreProductoQuantity').innerHTML; 
+    var quantity = parseFloat(document.getElementById('typeQuantity').value); 
+
+    var data = JSON.stringify({
+        IdProduct: idProducto,
+        Quantity: quantity
+    });
+
+    $.ajax({
+        url: '/Inventario/AlmacenaProducto',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+        contentType: 'application/json',
+        success: function (response) {
+            if (response.success) {
+                alert(`Se ingreso ${quantity} del producto ${nombre}`);
+                $('#tb_productos').DataTable().ajax.reload();
+                changePriceModal.hide();
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+
+}
+
+
+
 
 function ChangePriceProducto(id, nombre) {
     var id = document.getElementById('idProductoUpdate').innerHTML ;
     var nombre = document.getElementById('nombreProductoUpdate').innerHTML ;
-    var precio = document.getElementById('typeUnitPrice').innerHTML;
+    var precio = document.getElementById('typeUnitPrice').value;
 
     
     var xhr = new XMLHttpRequest();
-	xhr.open('POST', '/Inventario/DisableProduct?id=' + id, true);
+    xhr.open('POST', '/Inventario/ActualizarPrecio', true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 
 	xhr.onload = function (){
         if (this.status == 200) {
             //var data = JSON.parse(this.responseText);
-            alert("Se deshabilito el "+nombre)
+            alert(`Se cambio el precio (${precio}) del producto ${nombre}`)
+             $('#tb_productos').DataTable().ajax.reload();
+            changePriceModal.hide() 
         }
         else{
             alert("Hubo un problema")
@@ -99,12 +104,6 @@ function ChangePriceProducto(id, nombre) {
     });
 
     xhr.send(data); 
-    
-
-    // Almacena el ID del producto en el modal
-    // $('#updatePriceModal').data('id', id).modal('show');
-
-    changePriceModal.hide();
 }
 
 
@@ -119,22 +118,21 @@ function DeleteProducto(id, nombre) {
         if (this.status == 200) {
             //var data = JSON.parse(this.responseText);
             alert("Se deshabilito el "+nombre)
+            $('#tb_productos').DataTable().ajax.reload();
+            modalDisable.hide() 
+
         }
         else{
             alert("Hubo un problema")
         }
     }
     xhr.send(); 
-    $('#tb_productos').DataTable().ajax.reload();
-    modalDisable.hide() 
 }
 
 function EditProducto(id, nombre) {
     var id = document.getElementById('idProductoEdit').innerHTML; 
     var nombre = document.getElementById('nombreProductoEdit').innerHTML; 
 
-    // Almacena el ID del producto en el modal
-    // $('#updatePriceModal').data('id', id).modal('show');
 
     editModal.close();
 }

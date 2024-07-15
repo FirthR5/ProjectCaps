@@ -11,11 +11,6 @@
 	<h1>Inventario | Inicio</h1>
 
 	<p class="pb-3 pt-3">
-		@* <a asp-action="Create">Create New</a> *@
-        @* <button type="button" class="btn btn-info btn-sm px-3 fs-6" onclick ="openModal(1)" >
-			<i class="bi bi-plus-square"></i>
-			Registrar nuevo producto
-		</button> *@
 		<button type="button" class="btn btn-info btn-sm px-3 fs-6" onclick="location.href = '@Url.Action("RegistraNuevoProducto", "Inventario")'">
 			<i class="bi bi-plus-square"></i>
 			Registrar nuevo producto
@@ -59,11 +54,29 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body" id="ProductModalBody">
-				
+				<form class="w-100" style="max-width: 650px;">
+					<div class="mb-5">
+						<h4 class="mb-4">Cantidad de Productos a Ingresar</h4>
+
+						<p>Producto "<span id="nombreProductoQuantity"></span>"	</p>
+						<input type="text" class="none d-none" id="idProductoQuantity" />
+						<div class="row mb-3">
+							<div class="col-md-2 d-flex align-items-center">
+								<p class="mb-0 p-0">Cantidad</p>
+							</div>
+							<div class="col-md-10">
+								<div data-mdb-input-init class="form-outline">
+									<input type="number" id="typeQuantity" class="form-control" placeholder="Quantity" />
+									<label class="form-label d-lg-none none" for="typeQuantity" ></label>
+								</div>
+							</div>
+						</div>
+						<button type="button" class="btn btn-primary" onclick="AlmacenaProducto()">Actualizar Cantidad</button>
+					</div>
+				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-				@* <button type="button" class="btn btn-primary">Si, Guardar cambios</button> *@
 			</div>
 		</div>
 	</div>
@@ -147,21 +160,11 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerar</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 			</div>
 		</div>
 	</div>
 </div>
-
-
-
-
-
-
-<!-- Button trigger modal -->
-@* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#DisableProductModal">
-	Launch demo modal
-</button> *@
 
 
 @section Scripts{
@@ -190,23 +193,33 @@
                     {
                         targets: 0,
                         visible: false
-                    }
+                    },
+					{ width: '15%', targets: 6 }
                 ],
 
                 "columns": [
-                    { "data": "idProducto", "autoWidth": true },
+                    { "data": "idProducto", "autoWidth": false },
                     { "data": "prodName", "autoWidth": true },
                     { "data": "stock", "autoWidth": true },
                     { "data": "idProdCategory", "autoWidth": true },
                     { "data": "descripcion", "autoWidth": true },
-                    { "data": "activo", "autoWidth": true },
+                    { "data": "activo", "autoWidth": true,},
                     {
                         "render": function (data,type, row) {
-							return "<button type='button' class='btn btn-success mx-1'  onclick='openModal(2)'><i class='bi bi-arrow-down-up'></i></button>"+
-								"<a href='#' class='btn btn-danger' onclick=DeleteProductoModal('" + row.idProducto + "','" + row.prodName + "'); ><i class='bi bi-trash'></i></a> " +
-								"<a href='#' class='btn btn-primary' onclick=EditProductoModal('" + row.idProducto + "','" + row.prodName + "'); ><i class='bi bi-pencil-square'></i></a> " +
-								"<a href='#' class='btn btn-warning' onclick=ChangePriceProductoModal('" + row.idProducto + "','" + row.prodName + "'); ><i class='bi bi-currency-dollar'></i></a>";
-                        }
+							//<a href='#' class='btn btn-primary' onclick="EditProductoModal('${row.idProducto}', '${row.prodName}');">
+							//<i class='bi bi-pencil-square' > </i>
+							return `
+							<a class='btn btn-success' onclick="quantityOpenModal('${row.idProducto}', '${row.prodName}');">
+								<i class='bi bi-arrow-down-up'></i>
+							</a>
+							<a class='btn btn-danger' onclick="DeleteProductoModal('${row.idProducto}', '${row.prodName}');">
+								<i class='bi bi-trash'></i>
+							</a>
+							<a class='btn btn-warning' onclick="ChangePriceProductoModal('${row.idProducto}', '${row.prodName}');">
+								<i class='bi bi-currency-dollar'></i>
+							</a>
+						`;
+                        }, "autoWidth": true
                     },
                 ],
                 "lengthChange":false,

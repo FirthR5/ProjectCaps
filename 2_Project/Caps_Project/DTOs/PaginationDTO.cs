@@ -13,4 +13,9 @@ namespace Caps_Project.DTOs
         public PaginationDTO paginationDTO { get; set; }
         public List<Producto> listProductos { get; set; }
     }
+    public class PaginationUsuarioDTO
+    {
+        public PaginationDTO paginationDTO { get; set; }
+        public List<VwDatosUsuario> listUsuarios { get; set; }
+    }
 }

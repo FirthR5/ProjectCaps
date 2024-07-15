@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Caps_Project.DTOs;
 using Caps_Project.DTOs.EmpleadoDTOs;
 using Caps_Project.Models;
 using Caps_Project.Models.View.DTOs.LoginDTOs;
@@ -14,10 +15,20 @@ namespace Caps_Project.Services
         public EmpleadoService(DbCapsContext context, IMapper mapper) : base(context, mapper) { }
 
         // TODO: Hacer Obtener Lista de Empleados
-        public async Task<List<vwDatosUsuarioDTO>> ListaEmpleados()
+        public async Task<PaginationUsuarioDTO> ListaEmpleados(PaginationDTO paginationDTO)
         {
+            var query = context.VwDatosUsuarios;
 
-            return await context.VwDatosUsuarios.ToListAsync();
+            paginationDTO.recordsTotal = await query.CountAsync();
+            PaginationUsuarioDTO paginationProductoDTO = new PaginationUsuarioDTO()
+            {
+                paginationDTO = paginationDTO
+            };
+
+            paginationProductoDTO.listUsuarios = await query.Skip(paginationDTO.skip)
+                .Take(paginationDTO.pageSize).ToListAsync();
+
+            return paginationProductoDTO;
         }
 
         /// <summary>

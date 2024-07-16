@@ -1,5 +1,6 @@
 using Caps_Project.DTOs;
 using Caps_Project.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -12,6 +13,24 @@ builder.Services.AddDbContext<DbCapsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DevDB")));
 // Agregar Automappers
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+builder.Services.AddAuthentication(
+    CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(
+    option =>
+    {
+        option.LoginPath = "/Home/Login";
+        option.AccessDeniedPath = "/Home/Login";
+        option.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    }
+);
+
 
 
 var app = builder.Build();

@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@{
+    //ViewData["Title"] = "_Layout_Proveedor";
+    var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+    string nombre_completo_ = User.FindFirst("Nombre")?.Value;
+    var proveedor = User.FindFirst("ID_Proveedor")?.Value;//TODO: Quitar el ID cuando modifique el nombre del proveedor que pertenece.
+
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -52,7 +60,7 @@
 
                 <div class="d-flex">
                     <ul class="navbar-nav navbar-collapse collapse  d-sm-inline-flex justify-content-between flex-grow-1" id="NavAuth">
-                        @if (User.Identity.IsAuthenticated)
+                        @if (!User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="Login" class="nav-link nav-link fs-5">Log in <i class="bi bi-box-arrow-in-right"></i></a></li>
                         }
@@ -67,11 +75,11 @@
                                     <li>
                                         <div class="dropdown-item card-body fs-5">
                                             <i class="bi bi-person"></i>
-                                            <label>@* @nombre_completo_ *@ nombre</label>
+                                            <label>@nombre_completo_</label>
                                         </div>
                                         <div class="dropdown-item fs-5">
                                             <i class="bi bi-person-vcard"></i>
-                                            <label>@* @role *@ Role</label>
+                                            <label>@role</label>
                                         </div>
 
                                     </li>

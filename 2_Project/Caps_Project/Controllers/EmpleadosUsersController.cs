@@ -24,7 +24,6 @@ namespace Caps_Project.Controllers
             return View();
         }
 
-        // TODO: Hacer Obtener Lista de Empleados
         // Ver la lista de los Empleados
         [HttpPost]
         public async Task<JsonResult> ListaEmpleados()
@@ -77,19 +76,22 @@ namespace Caps_Project.Controllers
         }
 
         // Activar o desactivar el usuario
-        private async void DeActivarEmpleado(string IdEmpleado)
+        public async Task<ActionResult> DeActivarEmpleado(string IdEmpleado)
         {
-            // TODO: Agregar DTO to DTO
             ActivarUsuarioDTO usuario = new ActivarUsuarioDTO();
             usuario.IdEmpleado = IdEmpleado;
             EmpleadoService Serv_Inventario = new EmpleadoService(contexto);
             //Activarlo
-            bool IsActivated = await Serv_Inventario.ActivarUsuario(usuario);
-        }
+            bool IsActivated = await Serv_Inventario.DesactivarUsuario(usuario.IdEmpleado);
+            if(!IsActivated)
+            {
+				return NotFound();
+			}
+			return Ok(new { success = true });
+		}
 
-        // TODO: Ver si esto se implementa o neh
-        // Obtener la lista de los turnos de los empleados
-        public async Task<IActionResult> GetListaTipoEmp()
+		// Obtener la lista de los turnos de los empleados
+		public async Task<IActionResult> GetListaTipoEmp()
         {
             EmpleadoService Serv_Inventario = new EmpleadoService(contexto);
             var listaEmpleados = await Serv_Inventario.List_TipoEmpleado();

@@ -73,7 +73,7 @@ namespace Caps_Project.Services
             return isExecuted;
         }
 
-        public void DesactivarUsuario(string idEmpleado)
+        public async Task<bool> DesactivarUsuario(string idEmpleado)
         {
             var empleado = context.EmpleadoActivos.FirstOrDefault(e => e.IdEmpleado == idEmpleado);
 
@@ -81,8 +81,10 @@ namespace Caps_Project.Services
             {
                 empleado.EndDate = DateTime.Now;
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
       
         public async Task<List<string>> ObtenerListaDeTurnos()

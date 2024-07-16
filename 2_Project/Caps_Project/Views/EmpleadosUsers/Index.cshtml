@@ -37,21 +37,21 @@
 
 
 <!-- Disable Product Modal -->
-<div class="modal fade" id="DisableProductModal" tabindex="-1" aria-labelledby="DisableProductModalLabel" aria-hidden="true">
+<div class="modal fade" id="UserModal" tabindex="-1" aria-labelledby="UserModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="DisableProductModalLabel">Deshabilitar Producto</h5>
+				<h5 class="modal-title" id="UserModalLabel">Deshabilitar Producto</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<p id="idProductDisable" class="d-none"></p>
-				<p>¿Esta seguro que quiere deshabilitar el producto "<span id="nombreProductoDisable"></span>"?</p>
+				<p id="idToDisable" class="d-none"></p>
+				<p>¿Esta seguro que quiere deshabilitar el producto "<span id="nombreUsuario"></span>"?</p>
 
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Cerrar</button>
-				<button type="button" class="btn btn-primary" onclick="DeleteProducto()">Si, Guardar cambios</button>
+				<button type="button" class="btn btn-primary" onclick="DisableUser()">Si, Guardar cambios</button>
 			</div>
 		</div>
 	</div>
@@ -94,8 +94,9 @@
 					{
 						"render": function (data, type, row) {
 							return `
-									<a class='btn btn-danger' onclick="DeleteProductoModal('');">
+									<a class='btn btn-danger' onclick="DisableModalOpenModal('${row.idEmpleado}','${row.nombreCompleto}');">
 										<i class='bi bi-trash'></i>
+									</a>
 							`;
 						}, "autoWidth": true
 					},
@@ -122,5 +123,5 @@
 
 }
 
-@* <script src="~/js/Inventario/InventarioPage.js" defer></script> *@
-@* <link rel="stylesheet" href="~/css/Inventario/InventarioTable.css" /> *@
+<script src="~/js/Empleados/EmpleadoUsers.js" defer></script> 
+<link rel="stylesheet" href="~/css/Inventario/InventarioTable.css" />

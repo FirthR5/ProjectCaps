@@ -45,7 +45,6 @@ namespace Caps_Project.Services
         {
             int Activo;
             var idEmpleadoParam = new SqlParameter("@IdEmpleado", idEmpleado);
-            //var ActivParamo = new SqlParameter("Contrasena", Activo);
 
             var ActivParamo = new SqlParameter
             {
@@ -59,9 +58,11 @@ namespace Caps_Project.Services
                 idEmpleadoParam,
                 ActivParamo
             );
+            int usuarioActivo = (int)ActivParamo.Value;
 
-            return (int)ActivParamo.Value;
-        }
+            return usuarioActivo;
+
+		}
         /// <summary>
         /// Credenciales del Empleado
         /// Darle las Credenciales para poder iniciar sesion
@@ -79,7 +80,7 @@ namespace Caps_Project.Services
             List<Claim> claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, idEmpleado),
-                new Claim(ClaimTypes.Role, tipoEmpleado)//TODO: o ponerle el numerito?
+                new Claim(ClaimTypes.Role, tipoEmpleado)
             };
             claims.Add(new Claim("Nombre", $"{reqTipoEmp.Nombre} {reqTipoEmp.ApPaterno} {reqTipoEmp.ApMaterno}"));
             ClaimsIdentity claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

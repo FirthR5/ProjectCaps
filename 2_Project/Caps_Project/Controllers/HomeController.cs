@@ -52,7 +52,7 @@ namespace Caps_Project.Controllers
             if (usuarioCorrecto == 1)
             {
                 int UsuarioActivo = await serv_Login.VerificarUsuarioActivo(loginDTO.UserName);
-                if (usuarioCorrecto == 1)
+                if (UsuarioActivo == 1)
                 {
                     ClaimsIdentity claimIdentity = await serv_Login.CredencialesEmpleado(loginDTO.UserName);
 

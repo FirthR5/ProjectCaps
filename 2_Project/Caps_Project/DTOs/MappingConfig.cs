@@ -49,14 +49,13 @@ namespace Caps_Project.DTOs
                          opt => opt.MapFrom(src => src.Quantity))
                 ;
 
-
+     
             CreateMap<Producto, ProductoDTO>();
 
             // SourceModel, DestinationDTO
             CreateMap<Empleado, ActivarUsuarioDTO>();
             CreateMap<OrderReceipt, OrderReceiptDTO>();
             //CreateMap<ProductItem, >();
-            CreateMap<Empleado, LoginDTO>();
             CreateMap<Empleado, InsertEmpleadoDTO>();
 
             //CreateMap<Villa, VillaCreateDTO>().ReverseMap();

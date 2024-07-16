@@ -21,7 +21,7 @@ namespace Caps_Project.Services
         public async Task<int> VerificarCredenciales(LoginDTO credenciales)
         {
             //Input Parameter
-            var IdEmpleadoParameter = new SqlParameter("IdEmpleado", credenciales.IdEmpleado);
+            var IdEmpleadoParameter = new SqlParameter("IdEmpleado", credenciales.UserName);
             var ContrasenaParameter = new SqlParameter("Contrasena", credenciales.Contrasena);
             //Output Parameter
             var correctoParam = new SqlParameter
@@ -43,21 +43,24 @@ namespace Caps_Project.Services
         /// <returns>0=False, 1=Verdadero</returns>
         public async Task<int> VerificarUsuarioActivo(string idEmpleado)
         {
+            int Activo;
             var idEmpleadoParam = new SqlParameter("@IdEmpleado", idEmpleado);
-            var countParam = new SqlParameter
+            //var ActivParamo = new SqlParameter("Contrasena", Activo);
+
+            var ActivParamo = new SqlParameter
             {
-                ParameterName = "@Count",
+                ParameterName = "Activo",
                 SqlDbType = System.Data.SqlDbType.Int,
                 Direction = System.Data.ParameterDirection.Output
             };
 
             await context.Database.ExecuteSqlRawAsync(
-                "EXEC @Count = VerificarUsuarioActivo @IdEmpleado",
-                countParam,
-                idEmpleadoParam
+                "EXEC VerificarUsuarioActivo @IdEmpleado, @Activo OUTPUT",
+                idEmpleadoParam,
+                ActivParamo
             );
 
-            return (int)countParam.Value;
+            return (int)ActivParamo.Value;
         }
         /// <summary>
         /// Credenciales del Empleado

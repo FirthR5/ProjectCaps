@@ -3,7 +3,6 @@
     var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
     string nombre_completo_ = User.FindFirst("Nombre")?.Value;
-    var proveedor = User.FindFirst("ID_Proveedor")?.Value;//TODO: Quitar el ID cuando modifique el nombre del proveedor que pertenece.
 
 }
 <!DOCTYPE html>
@@ -38,21 +37,28 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark " asp-controller="Inventario" asp-action="Index" >
-                                Inventario
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark " asp-controller="EmpleadosUsers" asp-action="Index">
-                                Usuarios
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark " asp-controller="Productos" asp-action="Index">
-                                Ordenes
-                            </a>
-                        </li>
+                        @if(role == "ADMINISTRADOR"){
+							<li class="nav-item">
+								<a class="nav-link text-dark " asp-controller="Inventario" asp-action="Index">
+									Inventario
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link text-dark " asp-controller="EmpleadosUsers" asp-action="Index">
+									Usuarios
+								</a>
+                            </li>
+                        }
+                        else if (role == "EMPLEADO")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark " asp-controller="Productos" asp-action="Index">
+                                    Ordenes
+                                </a>
+                            </li>
+                        }
+
+                       
 
                        
                     </ul>

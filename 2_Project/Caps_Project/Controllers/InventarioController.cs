@@ -41,7 +41,7 @@ namespace Caps_Project.Controllers
             };
             
             InventarioService Serv_Inventario = new InventarioService(contexto);
-            var rawProductos = await Serv_Inventario.List_TipoEmpleado(paginationDTO);
+            var rawProductos = await Serv_Inventario.List_Productos(paginationDTO);
             var listaProductos = mapper.Map<List<ProductoDTO>>(rawProductos.listProductos);
 
             return Json(new
@@ -93,15 +93,6 @@ namespace Caps_Project.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult AlmacenaProducto(int IdProducto)
-        {
-            //TODO: Buscar producto
-            // Devolver: Nombre e IdProducto
-            string parcialView = "AlmacenaProducto";
-
-            return PartialView(parcialView);
-        }
-        [HttpGet]
         public ActionResult ActualizarPrecio()
         {
             // Metodo de prubea para ver el Modal
@@ -115,8 +106,9 @@ namespace Caps_Project.Controllers
             {
                 // Productos + Product Prices
                 InventarioService Serv_Inv = new InventarioService(contexto, mapper);
-                //TODO: ingresoInventario.IdAdmin = ponerlo de C#
-                bool queryExitoso = await Serv_Inv.IngresoProdInventario(ingresoInventario);
+				var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+				bool queryExitoso = await Serv_Inv.IngresoProdInventario(ingresoInventario, userId);
 
                 if (!queryExitoso)
                 {

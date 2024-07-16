@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Caps_Project.Services
 {
@@ -40,7 +41,6 @@ namespace Caps_Project.Services
             return normal;
         }
 
-        // TODO:  Ver si funciona
         private async Task<bool> EditarProducto(EditarProductoDTO product)
         {
             Producto normal = mapper.Map<Producto>(product);
@@ -59,7 +59,6 @@ namespace Caps_Project.Services
             context.SaveChanges();
         }
         
-        // TODO: Quitarle el Insert y poner el metodo (store procedure) que esta abajo de este metodo.
         /// <summary>
         /// Registrar Nuevos Productos
         /// </summary>
@@ -125,7 +124,7 @@ namespace Caps_Project.Services
         /// Ingreso de Nueva Cantidad de Productos al Inventario
         /// </summary>
         /// <param name="ingresoInventario"></param>
-        public async Task<bool> IngresoProdInventario(IngresoInventarioDTO ingresoInventario)
+        public async Task<bool> IngresoProdInventario(IngresoInventarioDTO ingresoInventario, string IdAdmin)
         {
             using (var transaction = context.Database.BeginTransaction())
             {
@@ -135,7 +134,7 @@ namespace Caps_Project.Services
                     var nuevoInventario = mapper.Map<Inventario>(ingresoInventario);
 
 					nuevoInventario.EntryDate = DateTime.Now;
-					nuevoInventario.IdAdmin ="ADM-000001";
+					nuevoInventario.IdAdmin = IdAdmin;
 					context.Inventarios.Add(nuevoInventario);
 
                     await context.SaveChangesAsync();
@@ -154,9 +153,9 @@ namespace Caps_Project.Services
         /// Lista de Productos
         /// </summary>
         /// <returns>List<Producto></returns>
-        public async Task<PaginationProductoDTO> List_TipoEmpleado(PaginationDTO paginationDTO)
+        public async Task<PaginationProductoDTO> List_Productos(PaginationDTO paginationDTO)
         {
-            var query = context.Productos;
+            var query = context.Productos.Where(p => p.Activo == true);
 
             paginationDTO.recordsTotal = await query.CountAsync(); 
             PaginationProductoDTO paginationProductoDTO = new PaginationProductoDTO(){
@@ -165,8 +164,6 @@ namespace Caps_Project.Services
 
             paginationProductoDTO.listProductos = await query.Skip(paginationDTO.skip)
                 .Take(paginationDTO.pageSize).ToListAsync();
-
-
 
             return paginationProductoDTO;
         }

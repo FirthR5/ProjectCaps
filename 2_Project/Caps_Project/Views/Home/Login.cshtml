@@ -1,25 +1,26 @@
-﻿
+﻿@model Caps_Project.DTOs.LoginDTOs.LoginDTO;
 @{
     ViewData["Title"] = "Login";
 }
-<section style="background-color: #41b883; min-height:85vh;">
+<form asp-action="Login" class="login-style">
   <div class=" py-5 h-100">
     <div class="row d-flex pb-5 justify-content-center align-items-center h-100">
       <div class="col-12 pt-5 pb-5 col-md-8 col-lg-6 col-xl-5">
         <div class="card shadow-2-strong" style="border-radius: 1rem;">
           <div class="card-body p-5 text-center"> 
-
             <hr class="my-4">
             <h3 class="mb-5">Inicio de Sesion</h3>
             <hr class="my-4">
             <div data-mdb-input-init class="form-outline mb-4">
-              <input type="text" id="typeUserName" class="form-control form-control-lg" />
-              <label class="form-label" for="UserName">Usuario</label>
+              <label class="form-label" asp-for="UserName">Usuario</label>
+              <input type="text"  asp-for="UserName" class="form-control form-control-lg" />
+                <span asp-validation-for="UserName" class="text-danger"/>
             </div>
 
             <div data-mdb-input-init class="form-outline mb-4">
-              <input type="password" id="typePassword" class="form-control form-control-lg" />
-              <label class="form-label" for="typePassword">Contraseña</label>
+              <label class="form-label" asp-for="Contrasena">Contraseña</label>
+              <input type="password" asp-for="Contrasena" class="form-control form-control-lg" />
+              <span asp-validation-for="Contrasena" class="text-danger" />
             </div>
 
             <!-- Checkbox -->
@@ -28,15 +29,28 @@
               <label class="form-check-label" for="form1Example3"> Remember password </label>
             </div> -->
 
-			<button data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-lg btn-block" type="submit">
+			<button class="btn btn-success btn-lg btn-block" type="submit">
 				Iniciar Sesion <i class="bi bi-box-arrow-right"></i>
 			</button>
 
+            @if (ViewBag.ErrorMessage != null)
+			{
+				<div class="alert alert-danger mt-4">
+					@ViewBag.ErrorMessage
+				</div>
+			}
 
           </div>
         </div>
       </div>
     </div>
   </div>
-</section>
+</form>
 
+
+<link href="~/css/Home/Home.css" rel="stylesheet" />
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

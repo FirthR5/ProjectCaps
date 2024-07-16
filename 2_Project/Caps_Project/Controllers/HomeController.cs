@@ -25,8 +25,8 @@ namespace Caps_Project.Controllers
         public async Task<IActionResult> Index()
         {
             var Rol = User.FindFirst(ClaimTypes.Role)?.Value;
-            if (Rol == "ADMINISTRADOR") return RedirectToAction("Admin");
-            else if (Rol == "EMPLEADO") return RedirectToAction("Emp");
+            if (Rol == "ADMINISTRADOR") return RedirectToAction("Dashboard");
+            else if (Rol == "EMPLEADO") return RedirectToAction("Inicio");
             else return RedirectToAction("Login", "Home");
         }
 
@@ -34,25 +34,27 @@ namespace Caps_Project.Controllers
         [HttpGet]
         public async Task<IActionResult> Login()
         {
+            var Rol = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (Rol == "ADMINISTRADOR") return RedirectToAction("Dashboard");
+            else if (Rol == "EMPLEADO") return RedirectToAction("Inicio");
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
+        public async Task<IActionResult> Login( LoginDTO loginDTO)
         {
-            //LoginDTO objeto = new LoginDTO()
-            //{
-            //    IdEmpleado = "ADM-000001",
-            //    Contrasena = "12345"
-            //};
+            if (!ModelState.IsValid) { TempData["Error"] = "Invalid format"; return View("Login", loginDTO); }
+
             var serv_Login = new LoginService(contexto);
+
+
             int usuarioCorrecto = await serv_Login.VerificarCredenciales(loginDTO);
             if (usuarioCorrecto == 1)
             {
-                int UsuarioActivo = await serv_Login.VerificarUsuarioActivo(loginDTO.IdEmpleado);
+                int UsuarioActivo = await serv_Login.VerificarUsuarioActivo(loginDTO.UserName);
                 if (usuarioCorrecto == 1)
                 {
-                    ClaimsIdentity claimIdentity = await serv_Login.CredencialesEmpleado(loginDTO.IdEmpleado);
+                    ClaimsIdentity claimIdentity = await serv_Login.CredencialesEmpleado(loginDTO.UserName);
 
                     AuthenticationProperties properties = new AuthenticationProperties()
                     {AllowRefresh = true,/*IsPersistent =false; */};
@@ -62,23 +64,26 @@ namespace Caps_Project.Controllers
                         new ClaimsPrincipal(claimIdentity),
                         properties);
 
-                    var Rol = User.FindFirst(ClaimTypes.Role)?.Value;
-                    if (Rol == "ADMINISTRADOR") return RedirectToAction("Admin");
-                    else if (Rol == "EMPLEADO") return RedirectToAction("Emp");
+                    //var Rol = User.FindFirst(ClaimTypes.Role)?.Value;
+                    var Rol = claimIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    if (Rol == "ADMINISTRADOR") return RedirectToAction("Dashboard");
+                    else if (Rol == "EMPLEADO") return RedirectToAction("Inicio");
                     //else return RedirectToAction("Login", "Home");
 
                     return RedirectToAction("Login", "Home");
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Home");
+                    ViewBag.ErrorMessage = "El usuario no se encuentra activo.";
+                    return View("Login", loginDTO);
                 }
             }
             else
             {
-                return RedirectToAction("Login", "Home");
+                ViewBag.ErrorMessage = "Credenciales Incorrectas.";
+
+                return View("Login", loginDTO);
             }
-            return View();
         }
         [Authorize]
         public async Task<IActionResult> LogOut()
@@ -89,6 +94,7 @@ namespace Caps_Project.Controllers
         #endregion
 
 
+        [HttpGet]
         [Authorize(Roles = "ADMINISTRADOR")]
         public IActionResult Dashboard()
         {

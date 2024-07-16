@@ -276,7 +276,10 @@ WHERE IdEmpleado = @IdEmpleado
 DECLARE @OrderId INT;
 SET @OrderId = 1;
 
-SELECT * FROM Product_Items
+SELECT IdItem, 
+	(SELECT ProdName from Productos where IdProducto = it.ProductID) ProductName, 
+Quantity, UnitPrice, ProductPriceID  FROM Product_Items it
+LEFT JOIN ProductPrices pp ON  it.ProductID = pp.ProductID
 WHERE OrderId = @OrderId
 
 

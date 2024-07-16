@@ -209,7 +209,6 @@ public partial class DbCapsContext : DbContext
 
             entity.ToTable("TempCarrito");
 
-            entity.Property(e => e.OrderUuid).HasColumnName("OrderUUID");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.ProductPriceId).HasColumnName("ProductPriceID");
         });
@@ -225,9 +224,9 @@ public partial class DbCapsContext : DbContext
                 .IsUnicode(false);
         });
 
-		// Add option to use the SQL View
-		//modelBuilder.Entity<vwDatosUsuarioDTO>().HasNoKey().ToView("vw_Datos_Usuario");
-		modelBuilder.Entity<VwDatosUsuario>(entity =>
+        // Add option to use the SQL View
+        //modelBuilder.Entity<vwDatosUsuarioDTO>().HasNoKey().ToView("vw_Datos_Usuario");
+        modelBuilder.Entity<VwDatosUsuario>(entity =>
         {
             entity
                 .HasNoKey()
@@ -247,9 +246,9 @@ public partial class DbCapsContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
-	//public DbSet<vwDatosUsuarioDTO> VwDatosUsuarios { get; set; }
-	public DbSet<ProductItemDTO> ProductItemsDTOs { get; set; }
-	partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    //public DbSet<vwDatosUsuarioDTO> VwDatosUsuarios { get; set; }
+    public DbSet<ProductItemDTO> ProductItemsDTOs { get; set; }
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
-public DbSet<Caps_Project.DTOs.InventarioDTOs.NuevoProductoDTO> NuevoProductoDTO { get; set; } = default!;
+    public DbSet<Caps_Project.DTOs.InventarioDTOs.NuevoProductoDTO> NuevoProductoDTO { get; set; } = default!;
 }

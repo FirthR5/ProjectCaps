@@ -11,7 +11,5 @@ public partial class TempCarrito
 
     public int Quantity { get; set; }
 
-    public Guid OrderUuid { get; set; }
-
     public int ProductId { get; set; }
 }

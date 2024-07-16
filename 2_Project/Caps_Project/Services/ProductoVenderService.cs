@@ -1,4 +1,5 @@
 ﻿using Azure.Identity;
+using Caps_Project.DTOs;
 using Caps_Project.DTOs.OrdenDTOs;
 using Caps_Project.Models;
 using Microsoft.Data.SqlClient;
@@ -10,13 +11,41 @@ namespace Caps_Project.Services
     public class ProductoVenderService : BaseService
     {
         public ProductoVenderService(DbCapsContext context) : base(context) { }
-		/// <summary>
-		///  Desactivar producto del inventario por ID
-		/// (Llamado por InventarioController)
-		/// </summary>
-		/// <param name="IdProducto"></param>
-		/// <returns></returns>
-		public async Task<bool> DesactivarProducto(int IdProducto)
+
+
+        /// <summary>
+        /// Lista de Productos
+        /// </summary>
+        /// <returns>List<Producto></returns>
+        public async Task</*PaginationProductoDTO*/List<ProductDTO>> ListProductos(/*PaginationDTO paginationDTO*/)
+        {
+            var query = context.Productos.Where(p => p.Activo == true);
+
+            //paginationDTO.recordsTotal = await query.CountAsync();
+            //PaginationProductoDTO paginationProductoDTO = new PaginationProductoDTO()
+            //{
+            //    paginationDTO = paginationDTO
+            //};
+
+            //paginationProductoDTO.listProductos = await query.Skip(paginationDTO.skip)
+            //    .Take(paginationDTO.pageSize).ToListAsync();
+
+            List<ProductDTO> s = await query.Select(x => new ProductDTO 
+            {
+                IdProducto = x.IdProducto, ProductName = x.ProdName, Stock = x.Stock,
+                UnitPrice = 0
+            }).ToListAsync();
+            return s;
+            //return paginationProductoDTO;
+        }
+
+        /// <summary>
+        ///  Desactivar producto del inventario por ID
+        /// (Llamado por InventarioController)
+        /// </summary>
+        /// <param name="IdProducto"></param>
+        /// <returns></returns>
+        public async Task<bool> DesactivarProducto(int IdProducto)
         {
             var producto = context.Productos.FirstOrDefault(p => p.IdProducto == IdProducto);
 
@@ -54,7 +83,7 @@ namespace Caps_Project.Services
 
 
                 context.TempCarritos.Add(nuevoItem);
-                context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch
             {

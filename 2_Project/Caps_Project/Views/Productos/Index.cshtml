@@ -1,0 +1,199 @@
+﻿@model  List<Caps_Project.DTOs.OrdenDTOs.ProductDTO>
+<style>
+    .cart-header {
+    font-weight: bold;
+    font-size: 1.25em;
+    color: #333;
+}
+
+.cart-column {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid black;
+    margin-right: 1.5em;
+    padding-bottom: 10px;
+    margin-top: 10px;
+}
+
+.cart-row {
+    display: flex;
+}
+
+.cart-item {
+    width: 45%;
+}
+
+.cart-price {
+    width: 20%;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.cart-quantity {
+    width: 35%;
+}
+
+.cart-item-title {
+    color: #333;
+    margin-left: .5em;
+    font-size: 1.2em;
+}
+
+</style>
+
+<div class="container pt-5">
+    <h1>Orden | Productos</h1>
+
+
+	<div class="py-2">
+		<div class="container px-2 px-lg-2 mt-5">
+			<div id="catalogo-productos" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                @foreach (var item in Model)
+                {
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <img class="card-img-top" style="max-width: 100%; min-height:280px;max-height:280px; " src="/th-3690418446.jpg"
+                            >
+                            <div name="DivCard" class="card-body p-4">
+                                <div class="text-center">
+                                    <h4 class="fw-bodler d-none">ID: @item.IdProducto</h4>
+                                    <h5 class="fw-bolder">@Html.DisplayFor(modelItem => item.ProductName)</h5>
+                                    <div>
+                                        <h6 class="fw-bodler" style="display: inline;">Stock: </h6>
+                                        <span class="fw-bodler " style="display: inline;">@item.Stock</span>
+                                    </div>
+                                    $ @Html.DisplayFor(modelItem => item.UnitPrice)
+
+
+                                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+
+                                        <div name="los_controles" class="d-grid d-md-grid gap-2 d-md-block align-items-center text-center los_controles">
+
+                                            <button name="elProducto" type="submit"  value="@item.IdProducto" hidden
+                                            class="btn btn-outline-dark mt-auto btn-detalle">
+                                                Ver Detalle
+                                            </button>
+
+                                            <button class="btn btn-outline-dark mt-auto btnMostrar">
+                                                Escoger
+                                            </button>
+                                            <input value="@item.Stock" class="none d-none stock-value" />
+
+                                            <div class="controles d-flex justify-content-center " style="display: none">
+                                                <button class="btn btn-outline-secondary btn-restar rounded-0"
+                                                style="display: none">
+                                                    <i class="bi bi-dash  fs-3"></i>
+                                                </button>
+                                                <input class="contadorZ form-control input-cantidad p-1 text-center rounded-0"
+                                                style="width:40px; display: none"
+                                                value="1" />
+                                                <button class="btn btn-outline-secondary btn-sumar rounded-0"
+                                                style="display: none">
+                                                    <i class="bi  bi-plus-lg fs-3"></i>
+                                                </button>
+                                            </div>
+                                            <button type="button" value="AddToCart" style="display: none"
+												id="btnAddToCart" onclick="AddToCart(this)"
+												class="btn btn-outline-dark mt-auto btn-agregar-carrito"
+												itemid="@item.IdProducto" itemName="@item.ProductName" itemPrice="@item.UnitPrice">
+                                                Agregar Carrito
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+		</div>
+	</div>
+
+
+</div>
+
+
+@section Scripts {
+	<script type="text/javascript">
+		$('.btnMostrar').click(function (event) {
+			var _Parent = $(this).parent("div.los_controles");
+			var input = $(_Parent).find("button.btn-agregar-carrito");
+			var botones = $(_Parent).find("div.controles");
+			$(this).hide()
+
+			botones.children().show();
+			input.show();
+		});
+
+        $(document).on('click', '.btn-sumar', function (event) {
+            var div = $(this).parent("div.controles");
+            var inputCantidad = $(div).find("input.input-cantidad");
+            var card = $(div).parent("div.los_controles");
+            var stockInput = $(card).find("input.stock-value");
+            var stockValue = stockInput.val();
+
+            // console.log(stockInput);
+            var cantidad = parseInt($(inputCantidad).val()) + 1;
+            if (cantidad > stockValue) {
+                alert("No puedes superar el stock disponible.");
+                return;
+            }
+            $(inputCantidad).val(cantidad);
+        });
+
+		$(document).on('click', '.btn-restar', function (event) {
+			var div = $(this).parent("div.controles");
+			var input = $(div).find("input.input-cantidad");
+			var cantidad = parseInt($(input).val()) - 1;
+			if (cantidad >= 1) {
+				$(input).val(cantidad);
+			}
+		});
+
+        function AddToCart(item) {
+            var items = new Object();
+            items.ProductId = parseInt($(item).attr("itemid"));
+            // items.PrecioUnitario = parseFloat($(item).attr("itemPrice"));
+            // items.Nombre = $(item).attr("itemName");
+
+            var divItem = $(item).parent("div.los_controles")
+            var controlesItem = $(divItem).find("div.controles")
+            var inputCantidad = $(controlesItem).find("input.input-cantidad")[0].value
+            items.Quantity = parseInt(inputCantidad)
+            $("#cartItem").text("Cart( " + items.Quantity + " )");
+            console.log(items)
+
+
+
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: '/Productos/AgregarAlCarrito',
+                data: JSON.stringify(items),
+                contentType: "application/json",
+                dataType: "json",
+                processData: false,
+                success: function (data) {
+
+                    if (data.success) {
+					console.log(data.success)
+                        $(controlesItem).find("input.input-cantidad")[0].value = "0"
+
+
+                    }
+                },
+                error: function () {
+                    alert("Hay un problema.")
+                }
+            })
+
+
+            const _Parent = $(item).parent("div.los_controles")
+            var _Controles = $(_Parent).find("div.controles")
+            _Controles.children().hide()
+            divItem.children().hide()
+
+        }
+	</script>
+}

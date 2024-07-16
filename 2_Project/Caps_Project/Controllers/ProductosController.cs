@@ -18,9 +18,13 @@ namespace Caps_Project.Controllers
             this.contexto = context;
             this.mapper = mapper;
         }
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            
+            ProductoVenderService d = new ProductoVenderService(contexto);
+            List<ProductDTO> x = await d.ListProductos();
+            return View(x);
         }
 
         #region Carrito Item
@@ -29,14 +33,16 @@ namespace Caps_Project.Controllers
         /// </summary>
         /// <param name="carritoTmp"></param>
         /// <returns></returns>
-        public async Task AgregarAlCarrito([FromBody] ItemCarritoDTO itemCarritoDTO)
+        [HttpPost]
+        public async Task<ActionResult> AgregarAlCarrito([FromBody] ItemCarritoDTO itemCarritoDTO)
         {
             //TODO: Crear el UUID
             // carritoTmp.OrderUuid = ???
-            ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
-            bool ejecucionCorrecta = await Serv_Inventario.AgregarAlCarrito(itemCarritoDTO);
+            //ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
+            //bool ejecucionCorrecta = await Serv_Inventario.AgregarAlCarrito(itemCarritoDTO);
             // TODO: agregar
             //ejecucionCorrecta
+            return Ok(new { success = true });
         }
         // TODO: Crear metodo de Editar 
         /// <summary>
@@ -62,7 +68,7 @@ namespace Caps_Project.Controllers
             bool IsActivated = await Serv_Inventario.EliminarItemDelCarrito(IdItemTemp);
             //return ???;
         }
-       #endregion
+        #endregion
 
         #region Orden
         /// <summary>
@@ -72,6 +78,7 @@ namespace Caps_Project.Controllers
         /// </summary>
         /// <param name="idEmpleado"></param>
         /// <returns></returns>
+        [HttpPost]
         private async Task RegistrarOrden(string idEmpleado)
         {
             ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
@@ -84,6 +91,7 @@ namespace Caps_Project.Controllers
         /// </summary>
         /// <param name="idEmpleado"></param>
         /// <returns></returns>
+        [HttpGet]
         private async Task VerOrdenesRealizadas(string idEmpleado)
         {
             ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
@@ -95,6 +103,7 @@ namespace Caps_Project.Controllers
         /// </summary>
         /// <param name="OrderId"></param>
         /// <returns></returns>
+        [HttpGet]
         private async Task VerOrderItems(int OrderId)
         {
             ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);

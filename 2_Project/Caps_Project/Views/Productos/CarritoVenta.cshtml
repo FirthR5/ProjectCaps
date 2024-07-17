@@ -1,0 +1,89 @@
+﻿@model IEnumerable<Caps_Project.DTOs.OrdenDTOs.ProductCarritoDTO>
+
+@{
+	ViewData["Title"] = "CarritoVenta";
+	decimal costoTotal = 0;
+}
+
+<section class="h-100 gradient-custom">
+	<div class="container py-5">
+		<div class="row d-flex justify-content-center my-4">
+
+			<h1>CarritoVenta</h1>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>
+							@Html.DisplayNameFor(model => model.IdItem)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.ProductId)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.ProductName)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.Quantity)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.ProductPriceID)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.UnitPrice)
+						</th>
+						<th>Precio total </th>
+						@* <th></th> *@
+					</tr>
+				</thead>
+				<tbody>
+			@foreach (var item in Model) {
+			costoTotal += item.UnitPrice *item. Quantity;
+
+				<tr>
+					<td>
+							@Html.DisplayFor(modelItem => item.IdItem)
+					</td>
+					<td>
+							@Html.DisplayFor(modelItem => item.ProductId)
+					</td> 
+					<td>
+							@Html.DisplayFor(modelItem => item.ProductName)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Quantity)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.ProductPriceID)
+					</td>
+					<td>
+					   $ @Html.DisplayFor(modelItem => item.UnitPrice)
+					</td>
+					<td>
+						$  @(item.UnitPrice * item.Quantity)
+					</td>
+				@* 	<td>
+						<a asp-action="Edit" asp-route-id="@item.IdItem">Edit</a> |
+						<a asp-action="Details" asp-route-id="@item.IdItem">Details</a> |
+						<a asp-action="Delete" asp-route-id="@item.IdItem">Delete</a>
+					</td> *@
+				</tr>
+			}
+				</tbody>
+			</table>
+
+			<button type="button"  class="btn btn-info btn-block btn-lg my-5">
+				<div class="d-flex justify-content-between">
+					<span>$ @costoTotal.ToString("F2")</span>
+							<a asp-action="RegistrarOrden" class="btn btn-info btn-sm px-3 fs-6">Realizar pago <i class="bi bi-plus-square"></i></a>
+
+				</div>
+			</button>
+
+			<p class="pb-3 pt-3">
+			</p>
+
+
+		</div>
+	</div>
+</section>
+

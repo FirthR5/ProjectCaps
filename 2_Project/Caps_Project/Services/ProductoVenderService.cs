@@ -1,4 +1,5 @@
-﻿using Azure.Identity;
+﻿using AutoMapper;
+using Azure.Identity;
 using Caps_Project.DTOs;
 using Caps_Project.DTOs.OrdenDTOs;
 using Caps_Project.Models;
@@ -11,6 +12,7 @@ namespace Caps_Project.Services
     public class ProductoVenderService : BaseService
     {
         public ProductoVenderService(DbCapsContext context) : base(context) { }
+        public ProductoVenderService(DbCapsContext context, IMapper mapper) : base(context, mapper) { }
 
 
         /// <summary>
@@ -73,14 +75,11 @@ namespace Caps_Project.Services
         {
             try
             {
-                TempCarrito nuevoItem;
-                nuevoItem = mapper.Map<TempCarrito>(itemCarritoDTO);
+                TempCarrito nuevoItem = mapper.Map<TempCarrito>(itemCarritoDTO);
                 
-                //nuevoItem.OrderUuid = TODO: Crear UUid
                 var productPrice = await context.ProductPrices
                                     .FirstAsync(p => p.EndDate == null && p.ProductId == itemCarritoDTO.ProductId);
                 nuevoItem.ProductPriceId = productPrice.IdPrice;
-
 
                 context.TempCarritos.Add(nuevoItem);
                 await context.SaveChangesAsync();
@@ -93,6 +92,51 @@ namespace Caps_Project.Services
             return true;
         }
 
+
+        //public async Task</*PaginationProductoDTO*/List<TempCarrito>> ListTempCarrito(/*PaginationDTO paginationDTO*/)
+        //{
+        //    var query = context.TempCarritos;
+
+        //    //paginationDTO.recordsTotal = await query.CountAsync();
+        //    //PaginationProductoDTO paginationProductoDTO = new PaginationProductoDTO()
+        //    //{
+        //    //    paginationDTO = paginationDTO
+        //    //};
+
+        //    //paginationProductoDTO.listProductos = await query.Skip(paginationDTO.skip)
+        //    //    .Take(paginationDTO.pageSize).ToListAsync();
+
+        //    List<TempCarrito> s = query.ToList();
+        //    return s;
+        //    //return paginationProductoDTO;
+        //}
+
+        public async Task<List<ProductCarritoDTO>> VerCarritoItems()
+        {
+            try
+            {
+                // TODO: AutoMappers OrderReceiptDT
+
+                var productItems = await context.ProductCarritoDTOs
+                    .FromSqlRaw(@"
+                             SELECT 
+                                  IdItem, it.ProductId,
+                                  (SELECT ProdName FROM Productos WHERE IdProducto = it.ProductID) AS ProductName, 
+                                  Quantity, 
+                                  UnitPrice, 
+                                  ProductPriceID 
+                              FROM TempCarrito it
+                              INNER JOIN ProductPrices pp ON it.ProductPriceID = pp.IdPrice
+                            ")
+                    .ToListAsync();
+
+                return productItems;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Eliminar un Item del carrito de compras temporal
@@ -158,7 +202,7 @@ namespace Caps_Project.Services
         #region Carrito Pagar
         // TODO: Try-Catch
         // TODO: Ver si funciona
-        private async Task<decimal> TotalPagar(List<ProductItem> productItems)
+        private async Task<decimal> TotalPagar(List<TempCarrito> productItems)
         {
             decimal total = 0;  
 
@@ -175,7 +219,7 @@ namespace Caps_Project.Services
 
                 
         // TODO: Evaluar si es mejor sacar los Items de la BD
-        public async Task<int> RegistrarOrden(string idEmpleado, List<ProductItem> productItems )
+        public async Task<int> RegistrarOrden(string idEmpleado, List<TempCarrito> tempProdItems )
         {
             // TODO: Funcionalidad
            
@@ -185,7 +229,7 @@ namespace Caps_Project.Services
                 {
                     // Obtener precio PrecioTotal
                     // Asignar precio total
-                    decimal totalPaid = await TotalPagar(productItems);
+                    decimal totalPaid = await TotalPagar(tempProdItems);
 
                     // Crear el OrderReceipt
                     var orderReceipt = new OrderReceipt
@@ -197,20 +241,22 @@ namespace Caps_Project.Services
                     context.OrderReceipts.AddAsync(orderReceipt);
                     await context.SaveChangesAsync();
 
-                     // =========================================================
-                     // Get: Lista de todos los productos del carrito temporal
-                     // =========================================================
-                    var ItemsCarritoTmp = await context.TempCarritos.ToListAsync();
+                    // =========================================================
+                    // Get: Lista de todos los productos del carrito temporal
+                    // =========================================================
+                    //var ItemsCarritoTmp = await context.TempCarritos.ToListAsync();
 
                     // Registrar productos Items (IdOrden a Items)
                     // Asignar el OrderId generado a los Product_Items
                     // TODO: Saltarse lo que tienen 0 quantity items
-                    foreach (var item in productItems){
+                    List<ProductItem> ProdItems = mapper.Map<List<ProductItem>>(tempProdItems);
+                    foreach (var item in ProdItems){
+                        item.IdItem = 0;
                         item.TicketOrderId = orderReceipt.OrderId;
                     }
 
                     // Insertar los Product_Items
-                    await context.ProductItems.AddRangeAsync(productItems);
+                    await context.ProductItems.AddRangeAsync(ProdItems);
                     await context.SaveChangesAsync();
 
                     // Eliminar todo los items del carrito
@@ -267,7 +313,7 @@ namespace Caps_Project.Services
                                 (SELECT ProdName FROM Productos WHERE IdProducto = it.ProductID) AS ProductName, 
                                 Quantity, 
                                 UnitPrice, 
-                                ProductPriceID  
+                                ProductPriceID
                             FROM Product_Items it
                             LEFT JOIN ProductPrices pp ON it.ProductID = pp.ProductID
                             WHERE OrderId = @OrderId", orderIdParameter)

@@ -44,7 +44,12 @@
 <div class="container pt-5">
     <h1>Orden | Productos</h1>
 
-
+    <p class="pb-3 pt-3">
+        <button type="button" class="btn btn-info btn-sm px-3 fs-6" onclick="location.href = '@Url.Action("CarritoVenta", "Productos")'">
+            <i class="bi bi-bag-check"></i>
+            Revisar carrito
+        </button>
+    </p>
 	<div class="py-2">
 		<div class="container px-2 px-lg-2 mt-5">
 			<div id="catalogo-productos" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
@@ -52,7 +57,8 @@
                 {
                     <div class="col mb-5">
                         <div class="card h-100">
-                            <img class="card-img-top" style="max-width: 100%; min-height:280px;max-height:280px; " src="/th-3690418446.jpg"
+                            <img class="card-img-top" style="max-width: 100%; min-height:280px;max-height:280px; object-fit: containjjj; "
+                                src="/th-3690418446.jpg"
                             >
                             <div name="DivCard" class="card-body p-4">
                                 <div class="text-center">
@@ -70,7 +76,7 @@
                                         <div name="los_controles" class="d-grid d-md-grid gap-2 d-md-block align-items-center text-center los_controles">
 
                                             <button name="elProducto" type="submit"  value="@item.IdProducto" hidden
-                                            class="btn btn-outline-dark mt-auto btn-detalle">
+												class="btn btn-outline-dark mt-auto btn-detalle">
                                                 Ver Detalle
                                             </button>
 
@@ -85,10 +91,10 @@
                                                     <i class="bi bi-dash  fs-3"></i>
                                                 </button>
                                                 <input class="contadorZ form-control input-cantidad p-1 text-center rounded-0"
-                                                style="width:40px; display: none"
-                                                value="1" />
+													style="width:40px; display: none"
+													value="1" />
                                                 <button class="btn btn-outline-secondary btn-sumar rounded-0"
-                                                style="display: none">
+													style="display: none">
                                                     <i class="bi  bi-plus-lg fs-3"></i>
                                                 </button>
                                             </div>

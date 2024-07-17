@@ -4,50 +4,53 @@
     ViewData["Title"] = "AgregarEmpleado";
 }
 
-<h1>AgregarEmpleado</h1>
+<div class="container my-5">
 
-<h4>Empleado</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="AgregarEmpleado">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ApPaterno" class="control-label"></label>
-                <input asp-for="ApPaterno" class="form-control" />
-                <span asp-validation-for="ApPaterno" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ApMaterno" class="control-label"></label>
-                <input asp-for="ApMaterno" class="form-control" />
-                <span asp-validation-for="ApMaterno" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Contrasena" class="control-label"></label>
-                <input asp-for="Contrasena"  type="password" class="form-control" />
-                <span asp-validation-for="Contrasena" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EmployeeType" class="control-label"></label>
-                <select asp-for="EmployeeType" class="form-control" asp-items="ViewBag.EmployeeType" id="inpEmployeeType">
-                    <option value="">Seleccione una categoría</option>
+	<h1>AgregarEmpleado</h1>
 
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Turno" class="control-label"></label>
-                <select asp-for="Turno" class="form-control" asp-items="ViewBag.Turno"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+	<hr />
+	<h4>Empleado</h4>
+	<div class="row">
+		<div class="col-md-4">
+			<form asp-action="AgregarEmpleado">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label asp-for="Nombre" class="control-label"></label>
+					<input asp-for="Nombre" class="form-control" />
+					<span asp-validation-for="Nombre" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="ApPaterno" class="control-label"></label>
+					<input asp-for="ApPaterno" class="form-control" />
+					<span asp-validation-for="ApPaterno" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="ApMaterno" class="control-label"></label>
+					<input asp-for="ApMaterno" class="form-control" />
+					<span asp-validation-for="ApMaterno" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Contrasena" class="control-label"></label>
+					<input asp-for="Contrasena"  type="password" class="form-control" />
+					<span asp-validation-for="Contrasena" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="EmployeeType" class="control-label"></label>
+					<select asp-for="EmployeeType" class="form-control" asp-items="ViewBag.EmployeeType" id="inpEmployeeType">
+						<option value="">Seleccione una categoría</option>
+
+					</select>
+				</div>
+				<div class="form-group">
+					<label asp-for="Turno" class="control-label"></label>
+					<select asp-for="Turno" class="form-control" asp-items="ViewBag.Turno"></select>
+				</div>
+				<div class="form-group mt-3">
+					<input type="submit" value="Create" class="btn btn-primary" />
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 @* <div>

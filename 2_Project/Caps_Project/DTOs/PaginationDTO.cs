@@ -22,6 +22,6 @@ namespace Caps_Project.DTOs
     public class PaginationUsuarioDTO
     {
         public PaginationDTO paginationDTO { get; set; }
-        public List<VwDatosUsuario> listUsuarios { get; set; }
+        public List<VwListaEmpleado> listUsuarios { get; set; }
     }
 }

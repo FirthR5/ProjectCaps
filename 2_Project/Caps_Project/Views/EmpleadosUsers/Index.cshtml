@@ -24,6 +24,8 @@
 							<th>User ID</th>
 							<th>Nombre</th>
 							<th>Tipo Empleado</th>
+							<th>Estado</th>
+							<th>Turno</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -91,6 +93,8 @@
 					{ "data": "idEmpleado", "autoWidth": false },
 					{ "data": "nombreCompleto", "autoWidth": true },
 					{ "data": "empTypeName", "autoWidth": true },
+					{ "data": "estado", "autoWidth": true },
+					{ "data": "turno", "autoWidth": true },
 					{
 						"render": function (data, type, row) {
 							return `

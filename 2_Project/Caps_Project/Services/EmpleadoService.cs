@@ -17,7 +17,7 @@ namespace Caps_Project.Services
         // TODO: Hacer Obtener Lista de Empleados
         public async Task<PaginationUsuarioDTO> ListaEmpleados(PaginationDTO paginationDTO)
         {
-            var query = context.VwDatosUsuarios;
+            var query = context.VwListaEmpleados;
 
             paginationDTO.recordsTotal = await query.CountAsync();
             PaginationUsuarioDTO paginationProductoDTO = new PaginationUsuarioDTO()

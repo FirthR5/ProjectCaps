@@ -49,7 +49,16 @@ namespace Caps_Project.DTOs
                          opt => opt.MapFrom(src => src.Quantity))
                 ;
 
-     
+            CreateMap<TempCarrito, ProductItem>()
+               .ForMember(name => name.ProductId,
+                         opt => opt.MapFrom(src => src.ProductId))
+                .ForMember(name => name.Quantity,
+                         opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(name => name.ProductPriceId,
+                         opt => opt.MapFrom(src => src.ProductPriceId))
+                ;
+
+
             CreateMap<Producto, ProductoDTO>();
 
             // SourceModel, DestinationDTO

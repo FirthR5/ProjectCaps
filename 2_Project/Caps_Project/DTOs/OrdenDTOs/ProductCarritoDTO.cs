@@ -2,16 +2,19 @@
 
 namespace Caps_Project.DTOs.OrdenDTOs
 {
-    public class ProductDTO
+    public class ProductCarritoDTO
     {
         [Key]
-        public int IdProducto { get; set; }
+        public int IdItem { get; set; }
 
         public string ProductName { get; set; }
 
         public decimal UnitPrice { get; set; }
 
-        public int Stock { get; set; }
 
+        public int Quantity { get; set; }
+
+        public int ProductPriceID { get; set; }
+        public int ProductId { get; set; }
     }
 }

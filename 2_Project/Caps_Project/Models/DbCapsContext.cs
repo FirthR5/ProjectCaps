@@ -248,6 +248,7 @@ public partial class DbCapsContext : DbContext
     }
     //public DbSet<vwDatosUsuarioDTO> VwDatosUsuarios { get; set; }
     public DbSet<ProductItemDTO> ProductItemsDTOs { get; set; }
+    public DbSet<ProductCarritoDTO> ProductCarritoDTOs { get; set; }
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
     public DbSet<Caps_Project.DTOs.InventarioDTOs.NuevoProductoDTO> NuevoProductoDTO { get; set; } = default!;

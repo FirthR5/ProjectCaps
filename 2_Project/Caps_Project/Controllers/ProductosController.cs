@@ -36,14 +36,26 @@ namespace Caps_Project.Controllers
         [HttpPost]
         public async Task<ActionResult> AgregarAlCarrito([FromBody] ItemCarritoDTO itemCarritoDTO)
         {
-            //TODO: Crear el UUID
-            // carritoTmp.OrderUuid = ???
-            //ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
-            //bool ejecucionCorrecta = await Serv_Inventario.AgregarAlCarrito(itemCarritoDTO);
-            // TODO: agregar
-            //ejecucionCorrecta
+            ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto, mapper);
+            bool ejecucionCorrecta = await Serv_Inventario.AgregarAlCarrito(itemCarritoDTO);
+
+            if (!ejecucionCorrecta) {
+                return BadRequest(new {message = "No se pudo guardar en el carrito el producto"});
+            }
             return Ok(new { success = true });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CarritoVenta()
+        {
+
+            ProductoVenderService d = new ProductoVenderService(contexto);
+            List<ProductCarritoDTO> x = await d.VerCarritoItems();
+
+            //List<TempCarrito> x = await d.ListTempCarrito();
+            return View(x);
+        }
+
         // TODO: Crear metodo de Editar 
         /// <summary>
         /// Actualizar la cantidad de items seleccionados del Carrito temporal
@@ -78,12 +90,17 @@ namespace Caps_Project.Controllers
         /// </summary>
         /// <param name="idEmpleado"></param>
         /// <returns></returns>
-        [HttpPost]
-        private async Task RegistrarOrden(string idEmpleado)
+        [HttpGet]
+        public async Task<IActionResult> RegistrarOrden()
         {
-            ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto);
-            var productosItems = contexto.ProductItems.ToList();
-            int OrderId = await Serv_Inventario.RegistrarOrden(idEmpleado, productosItems );
+            ProductoVenderService Serv_Inventario = new ProductoVenderService(contexto, mapper);
+            string idEmpleado  = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var productosItems = contexto.TempCarritos.ToList();
+            if (productosItems.Count != 0)
+            {
+                int OrderId = await Serv_Inventario.RegistrarOrden(idEmpleado, productosItems);
+            }
+            return RedirectToAction("index", "Home");
 
         }
         /// <summary>

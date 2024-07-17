@@ -41,8 +41,10 @@ public partial class DbCapsContext : DbContext
 
     public virtual DbSet<VwDatosUsuario> VwDatosUsuarios { get; set; }
 
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //    => optionsBuilder.UseSqlServer("name=DevDB");
+    public virtual DbSet<VwListaEmpleado> VwListaEmpleados { get; set; }
+
+   //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+   //    => optionsBuilder.UseSqlServer("name=DevDB");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -224,8 +226,6 @@ public partial class DbCapsContext : DbContext
                 .IsUnicode(false);
         });
 
-        // Add option to use the SQL View
-        //modelBuilder.Entity<vwDatosUsuarioDTO>().HasNoKey().ToView("vw_Datos_Usuario");
         modelBuilder.Entity<VwDatosUsuario>(entity =>
         {
             entity
@@ -244,12 +244,36 @@ public partial class DbCapsContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<VwListaEmpleado>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vw_ListaEmpleados");
+
+            entity.Property(e => e.EmpTypeName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Estado)
+                .HasMaxLength(8)
+                .IsUnicode(false);
+            entity.Property(e => e.IdEmpleado)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.NombreCompleto)
+                .HasMaxLength(302)
+                .IsUnicode(false);
+            entity.Property(e => e.Turno)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
-    //public DbSet<vwDatosUsuarioDTO> VwDatosUsuarios { get; set; }
-    public DbSet<ProductItemDTO> ProductItemsDTOs { get; set; }
-    public DbSet<ProductCarritoDTO> ProductCarritoDTOs { get; set; }
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+	//public DbSet<vwDatosUsuarioDTO> VwDatosUsuarios { get; set; }
+	public DbSet<ProductItemDTO> ProductItemsDTOs { get; set; }
+	public DbSet<ProductCarritoDTO> ProductCarritoDTOs { get; set; }
+	partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
-    public DbSet<Caps_Project.DTOs.InventarioDTOs.NuevoProductoDTO> NuevoProductoDTO { get; set; } = default!;
+	public DbSet<Caps_Project.DTOs.InventarioDTOs.NuevoProductoDTO> NuevoProductoDTO { get; set; } = default!;
 }

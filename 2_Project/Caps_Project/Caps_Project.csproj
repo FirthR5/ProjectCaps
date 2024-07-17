@@ -28,10 +28,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.3" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\js\Empleados\" />
-    <Folder Include="wwwroot\js\Nuevo\" />
-  </ItemGroup>
 
-
+ 
 </Project>

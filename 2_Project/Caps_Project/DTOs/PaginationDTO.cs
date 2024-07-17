@@ -1,4 +1,5 @@
-﻿using Caps_Project.Models;
+﻿using Caps_Project.DTOs.InventarioDTOs;
+using Caps_Project.Models;
 
 namespace Caps_Project.DTOs
 {
@@ -12,6 +13,11 @@ namespace Caps_Project.DTOs
     {
         public PaginationDTO paginationDTO { get; set; }
         public List<Producto> listProductos { get; set; }
+    }
+    public class PaginationProductoDTO2
+    {
+        public PaginationDTO paginationDTO { get; set; }
+        public List<ProductoDTO> listProductos { get; set; }
     }
     public class PaginationUsuarioDTO
     {

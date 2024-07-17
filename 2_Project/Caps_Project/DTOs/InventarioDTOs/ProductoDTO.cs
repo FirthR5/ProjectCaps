@@ -13,6 +13,7 @@ namespace Caps_Project.DTOs.InventarioDTOs
 		public int Stock { get; set; }
 
 		public int IdProdCategory { get; set; }
+		public string CategoryName { get; set; }
 
 		public string? Descripcion { get; set; }
 

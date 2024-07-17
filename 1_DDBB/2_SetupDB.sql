@@ -98,7 +98,108 @@ BEGIN
 
 END
 
+-- ==================================================================
+-- Seccion traida del archivo 3
+-- Views & SP
+
+-- =======================================================================
+-- Login
+-- By: Admin and Employees
+-- Check if match on empleado
+-- Check if it's active
+
+-- (1) I. Match Empleado
+CREATE PROCEDURE VerificarCredenciales
+    @IdEmpleado CHAR(10),
+    @Contrasena VARCHAR(30), 
+	@Correcto INT OUTPUT
+AS
+BEGIN
+    SET @Correcto = (SELECT COUNT(1) AS Cantidad
+    FROM dbo.Empleado
+    WHERE IdEmpleado = @IdEmpleado
+    AND Contrasena = HASHBYTES('SHA2_256', @Contrasena));
+END;
+-----------------------
+-- (1) II. Checar si esta activo
+CREATE PROCEDURE VerificarUsuarioActivo
+    @IdEmpleado CHAR(10), @Activo INT OUT
+AS
+BEGIN
+	SET @Activo = (SELECT COUNT(1) FROM Empleado_Activo
+	WHERE IdEmpleado=@IdEmpleado AND
+	EndDate IS NULL)
+END
+-- =======================================================================
+
+-- (2) Ver Datos del usuario (El mismo usuario ve su informacion):
+-- By: Todos los empleados, Admin
+-- TODO: Probar View despues
+CREATE VIEW vw_Datos_Usuario
+AS
+SELECT E.IdEmpleado, (Nombre + ' ' + ApPaterno + ' ' + ApMaterno) AS NombreCompleto,
+TE.EmpTypeName
+FROM dbo.Empleado E
+INNER JOIN dbo.TipoEmpleado TE ON E.EmployeeType = TE.IdEmployeeType
+-- (4) Ver lista de empleados
+-- By: Admin
+-- TODO: Include in EF
+CREATE VIEW vw_ListaEmpleados
+AS
+SELECT E.IdEmpleado, (Nombre + ' ' + ApPaterno + ' ' + ApMaterno) AS NombreCompleto,
+	TE.EmpTypeName
+    ,IIF(EA.EndDate IS NULL, 'Activo', 'Inactivo') as Estado
+	, EA.Turno
+FROM dbo.Empleado E
+LEFT JOIN dbo.TipoEmpleado TE ON E.EmployeeType = TE.IdEmployeeType
+OUTER APPLY (
+    SELECT TOP 1 EA.EndDate, EA.Turno 
+    FROM dbo.Empleado_Activo EA 
+    WHERE EA.IdEmpleado = E.IdEmpleado 
+    ORDER BY EA.StartDate DESC
+) EA;
+
+-- (7) III. Insertar y Actualizar ProductPrices
+-- By: Admin
+CREATE PROCEDURE sp_InsertOrUpdateProductPrices
+    @ProductID INT,
+    @UnitPrice MONEY
+AS
+BEGIN
+    BEGIN TRANSACTION;
+    -- Verificar si existe un registro con ProductID y EndDate es NULL
+    IF EXISTS (SELECT 1 FROM ProductPrices WHERE ProductID = @ProductID AND EndDate IS NULL)
+    BEGIN
+        -- Actualizar EndDate para indicar que el precio ya paso, osea ya esta en desuso
+        UPDATE ProductPrices
+        SET EndDate = GETDATE()
+        WHERE ProductID = @ProductID AND EndDate IS NULL;
+    END
+
+    -- Actualizar el Precio del Producto
+    INSERT INTO ProductPrices (ProductID, StartDate, EndDate, UnitPrice)
+    VALUES (@ProductID, GETDATE(), NULL, @UnitPrice);
+
+    COMMIT TRANSACTION;
+END;
 
 
 
 
+
+
+
+---
+CREATE PROCEDURE sp_ListaDeTurnos
+AS
+BEGIN
+    DECLARE @Turnos TABLE (
+        Texto VARCHAR(50)
+    );
+	-- Turnos 
+    INSERT INTO @Turnos (Texto)
+    VALUES ('Dia'), ('Noche'), ('Completo');
+
+    SELECT * FROM @Resultado;
+END;
+

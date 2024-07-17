@@ -15,7 +15,7 @@ USE DB_CAPS
 -- Check if it's active
 
 -- (1) I. Match Empleado
-Alter PROCEDURE VerificarCredenciales
+CREATE PROCEDURE VerificarCredenciales
     @IdEmpleado CHAR(10),
     @Contrasena VARCHAR(30), 
 	@Correcto INT OUTPUT
@@ -80,11 +80,12 @@ EXEC ActivarUsuario
 -- By: Admin
 -- TODO: Probar View despues
 SELECT E.IdEmpleado, (Nombre + ' ' + ApPaterno + ' ' + ApMaterno) AS NombreCompleto,
-TE.EmpTypeName,
-    EA.EndDate,
-    EA.Turno
+TE.EmpTypeName
+    --,EA.EndDate
+    ,IIF(EA.EndDate IS NULL, 'Activo', 'Inactivo') as Estado
+	, EA.Turno
 FROM dbo.Empleado E
-INNER JOIN dbo.TipoEmpleado TE ON E.EmployeeType = TE.IdEmployeeType
+LEFT JOIN dbo.TipoEmpleado TE ON E.EmployeeType = TE.IdEmployeeType
 OUTER APPLY (
     SELECT TOP 1 EA.EndDate, EA.Turno 
     FROM dbo.Empleado_Activo EA 
@@ -225,7 +226,15 @@ VALUES (101, 2, 5001);
 --DECLARE @OrderUUID UNIQUEIDENTIFIER
 --SET @OrderUUID = 'UUID a Consultar';
 
-SELECT * FROM TempCarrito --WHERE OrderUUID = @OrderUUID;
+--SELECT * FROM TempCarrito --WHERE OrderUUID = @OrderUUID;
+SELECT 
+      IdItem, it.ProductId,
+      (SELECT ProdName FROM Productos WHERE IdProducto = it.ProductID) AS ProductName, 
+      Quantity, 
+      --UnitPrice, 
+      ProductPriceID 
+  FROM TempCarrito it
+  INNER JOIN ProductPrices pp ON it.ProductPriceID = pp.IdPrice
 
 -- (10) IV. Select the last price of ProductPrices
 -- TODO:

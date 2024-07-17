@@ -202,4 +202,9 @@ BEGIN
 
     SELECT * FROM @Resultado;
 END;
-
+----- Create Index--NONCLUSTERED-- Crear indice en EmployeeType para consultas joins mas rapidasCREATE NONCLUSTERED INDEX idx_EmployeeType
+ON Empleado (EmployeeType);--DROP INDEX idx_EmployeeType ON Empleado;
+--Empleado_ActivoCREATE NONCLUSTERED INDEX idx_Empleado_Activo_IdEmpleado_StartDate
+ON dbo.Empleado_Activo (IdEmpleado, StartDate DESC);
+-- TempCarritoCREATE NONCLUSTERED INDEX idx_T
+ON dbo.TempCarrito (ProductPriceID);

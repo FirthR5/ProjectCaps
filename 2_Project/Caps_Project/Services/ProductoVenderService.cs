@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Azure.Identity;
 using Caps_Project.DTOs;
+using Caps_Project.DTOs.InventarioDTOs;
 using Caps_Project.DTOs.OrdenDTOs;
 using Caps_Project.Models;
 using Microsoft.Data.SqlClient;
@@ -23,23 +24,37 @@ namespace Caps_Project.Services
         {
             var query = context.Productos.Where(p => p.Activo == true);
 
-            //paginationDTO.recordsTotal = await query.CountAsync();
-            //PaginationProductoDTO paginationProductoDTO = new PaginationProductoDTO()
-            //{
-            //    paginationDTO = paginationDTO
-            //};
+			//paginationDTO.recordsTotal = await query.CountAsync();
+			//PaginationProductoDTO paginationProductoDTO = new PaginationProductoDTO()
+			//{
+			//    paginationDTO = paginationDTO
+			//};
 
-            //paginationProductoDTO.listProductos = await query.Skip(paginationDTO.skip)
-            //    .Take(paginationDTO.pageSize).ToListAsync();
+			//paginationProductoDTO.listProductos = await query.Skip(paginationDTO.skip)
+			//    .Take(paginationDTO.pageSize).ToListAsync();
 
-            List<ProductDTO> s = await query.Select(x => new ProductDTO 
-            {
-                IdProducto = x.IdProducto, ProductName = x.ProdName, Stock = x.Stock,
-                UnitPrice = 0
-            }).ToListAsync();
-            return s;
-            //return paginationProductoDTO;
-        }
+			var products = await query.ToListAsync();
+			var productDTOs = new List<ProductDTO>();
+
+			foreach (var product in products)
+			{
+				var unitPrice = await context.ProductPrices
+											.Where(pp => pp.ProductId == product.IdProducto && pp.EndDate == null)
+											.Select(p => p.UnitPrice)
+											.FirstOrDefaultAsync();
+
+				productDTOs.Add(new ProductDTO
+				{
+					IdProducto = product.IdProducto,
+					ProductName = product.ProdName,
+					Stock = product.Stock,
+					UnitPrice = unitPrice
+				});
+			}
+
+			return productDTOs;
+			//return paginationProductoDTO;
+		}
 
         /// <summary>
         ///  Desactivar producto del inventario por ID

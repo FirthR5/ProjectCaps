@@ -43,8 +43,8 @@ public partial class DbCapsContext : DbContext
 
     public virtual DbSet<VwListaEmpleado> VwListaEmpleados { get; set; }
 
-   //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-   //    => optionsBuilder.UseSqlServer("name=DevDB");
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    => optionsBuilder.UseSqlServer("name=DevDB");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,6 +53,8 @@ public partial class DbCapsContext : DbContext
             entity.HasKey(e => e.IdEmpleado).HasName("PK__Empleado__CE6D8B9E466B3691");
 
             entity.ToTable("Empleado");
+
+            entity.HasIndex(e => e.EmployeeType, "idx_EmployeeType");
 
             entity.Property(e => e.IdEmpleado)
                 .HasMaxLength(10)
@@ -79,6 +81,8 @@ public partial class DbCapsContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Empleado__3214EC07EE576B0E");
 
             entity.ToTable("Empleado_Activo");
+
+            entity.HasIndex(e => new { e.IdEmpleado, e.StartDate }, "idx_Empleado_Activo_IdEmpleado_StartDate").IsDescending(false, true);
 
             entity.Property(e => e.EndDate).HasColumnType("datetime");
             entity.Property(e => e.IdEmpleado)
@@ -210,6 +214,10 @@ public partial class DbCapsContext : DbContext
             entity.HasKey(e => e.IdItem).HasName("PK__TempCarr__51E8426261C66D48");
 
             entity.ToTable("TempCarrito");
+
+            entity.HasIndex(e => e.ProductPriceId, "idx_T");
+
+            entity.HasIndex(e => e.ProductPriceId, "idx_TempCarritoPrice");
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.ProductPriceId).HasColumnName("ProductPriceID");

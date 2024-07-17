@@ -28,6 +28,7 @@
 							<th>ID</th>
 							<th>Nombre</th>
 							<th>Stock</th>
+							<th>Categoria ID</th>
 							<th>Categoria</th>
 							<th>Descripcion</th>
 							<th>Activo</th>
@@ -194,6 +195,10 @@
                         targets: 0,
                         visible: false
                     },
+					{
+						targets: 3,
+						visible: false
+					},
 					{ width: '15%', targets: 6 }
                 ],
 
@@ -202,8 +207,19 @@
                     { "data": "prodName", "autoWidth": true },
                     { "data": "stock", "autoWidth": true },
                     { "data": "idProdCategory", "autoWidth": true },
+					{ "data": "categoryName", "autoWidth": true },
                     { "data": "descripcion", "autoWidth": true },
-                    { "data": "activo", "autoWidth": true,},
+					{
+						"data": "activo", 
+						"render": function (data, type, row) {
+							if (data) {
+								return '<span class="badge bg-success">Success</span>';
+							} else {
+								return '<span class="badge bg--danger">Danger</span>';
+							}
+						},
+						"autoWidth": true,
+					},
                     {
                         "render": function (data,type, row) {
 							//<a href='#' class='btn btn-primary' onclick="EditProductoModal('${row.idProducto}', '${row.prodName}');">

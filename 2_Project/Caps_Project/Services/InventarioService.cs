@@ -153,16 +153,27 @@ namespace Caps_Project.Services
         /// Lista de Productos
         /// </summary>
         /// <returns>List<Producto></returns>
-        public async Task<PaginationProductoDTO> List_Productos(PaginationDTO paginationDTO)
+        public async Task<PaginationProductoDTO2> List_Productos(PaginationDTO paginationDTO)
         {
-            var query = context.Productos.Where(p => p.Activo == true);
+            //var query = context.Productos.Where(p => p.Activo == true);
+            var query2 = context.Productos.Where(p => p.Activo == true)
+                .Join(context.ProductCategories, p=> p.IdProdCategory, pc=>pc.IdCategory, (p, pc) => new ProductoDTO
+                {
+                    Activo = p.Activo,
+                    IdProdCategory = p.IdProdCategory, 
+                    CategoryName = pc.CategoryName,
+                    Descripcion = p.Descripcion,
+                    IdProducto = p.IdProducto,
+                    Stock = p.Stock,
+                    ProdName = p.ProdName
+                });
 
-            paginationDTO.recordsTotal = await query.CountAsync(); 
-            PaginationProductoDTO paginationProductoDTO = new PaginationProductoDTO(){
+            paginationDTO.recordsTotal = await query2.CountAsync();
+            PaginationProductoDTO2 paginationProductoDTO = new PaginationProductoDTO2(){
                 paginationDTO = paginationDTO
             } ;
 
-            paginationProductoDTO.listProductos = await query.Skip(paginationDTO.skip)
+            paginationProductoDTO.listProductos = await query2.Skip(paginationDTO.skip)
                 .Take(paginationDTO.pageSize).ToListAsync();
 
             return paginationProductoDTO;

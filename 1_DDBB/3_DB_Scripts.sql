@@ -207,25 +207,25 @@ WHERE Stock > 0 AND Activo = 1
 -- (Add a TemporalTable for ItemsReceipt)
 -- By: Empleado
 -- IdItem, Quantity, TickerOrderId, ProductID
-DECLARE @OrderUUID UNIQUEIDENTIFIER
-SET @OrderUUID = NEWID();
+--DECLARE @OrderUUID UNIQUEIDENTIFIER
+--SET @OrderUUID = NEWID();
 -- (10) I. Temp Carrito Guardar
-INSERT INTO TempCarrito (ProductPriceID, Quantity, OrderUUID, ProductID)
-VALUES (101, 2, @OrderUUID, 5001);
+INSERT INTO TempCarrito (ProductPriceID, Quantity, ProductID)
+VALUES (101, 2, 5001);
 
 
 -- (10) II. Operacion Delete
 -- Eliminar todo los productos del carrito despues de realizar la compra
 -- By: Empleado
-DELETE TempCarrito WHERE OrderUUID = NEWID() -- TODO: Aqui poner el UUID 
+--DELETE TempCarrito WHERE OrderUUID = NEWID() -- TODO: Aqui poner el UUID 
 ---
 
 -- (10) III. Lista del carrito para agregarlo al ProductItems
 -- By: Empleado
-DECLARE @OrderUUID UNIQUEIDENTIFIER
-SET @OrderUUID = 'UUID a Consultar';
+--DECLARE @OrderUUID UNIQUEIDENTIFIER
+--SET @OrderUUID = 'UUID a Consultar';
 
-SELECT * FROM TempCarrito WHERE OrderUUID = @OrderUUID;
+SELECT * FROM TempCarrito --WHERE OrderUUID = @OrderUUID;
 
 -- (10) IV. Select the last price of ProductPrices
 -- TODO:
@@ -276,11 +276,11 @@ WHERE IdEmpleado = @IdEmpleado
 DECLARE @OrderId INT;
 SET @OrderId = 1;
 
-SELECT IdItem, 
+SELECT IdItem, it.ProductId,
 	(SELECT ProdName from Productos where IdProducto = it.ProductID) ProductName, 
 Quantity, UnitPrice, ProductPriceID  FROM Product_Items it
-LEFT JOIN ProductPrices pp ON  it.ProductID = pp.ProductID
-WHERE OrderId = @OrderId
+INNER JOIN ProductPrices pp ON it.ProductPriceID = pp.IdPrice
+WHERE TicketOrderID = @OrderId
 
 
 -- =======================================================================
